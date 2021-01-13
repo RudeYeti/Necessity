@@ -11,8 +11,8 @@ import java.util.UUID;
 
 public class CheckCommand {
     public static void execute() {
-        if (Whitelist.messageContent.startsWith(Config.prefix + "check")) {
-            String user = Whitelist.messageContent.replace(Config.prefix + "check" + " ", "");
+        if (Whitelist.messageContent.startsWith(Config.get.prefix + "check")) {
+            String user = Whitelist.messageContent.replace(Config.get.prefix + "check" + " ", "");
 
             if (!user.equals(Whitelist.messageContent)) {
                 if (Player.exists(user)) {
@@ -40,7 +40,7 @@ public class CheckCommand {
                     }
                 }
             } else {
-                Whitelist.textChannel.sendMessage("Usage: `" + Config.prefix + "check <discord-id | minecraft-username>`").queue();
+                Whitelist.textChannel.sendMessage("Usage: `" + Config.get.prefix + "check <discord-id | minecraft-username>`").queue();
                 return;
             }
 

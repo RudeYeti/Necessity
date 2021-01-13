@@ -15,7 +15,7 @@ public class Status {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         int onlinePlayers = Necessity.onlinePlayers.size();
 
-        embedBuilder.setTitle(Config.serverAddress, null);
+        embedBuilder.setTitle(Config.get.serverAddress, null);
         embedBuilder.setColor(new Color(0x759965));
 
         embedBuilder.addField(
@@ -57,7 +57,7 @@ public class Status {
     public static EmbedBuilder serverOff() {
         EmbedBuilder embedBuilder = new EmbedBuilder();
 
-        embedBuilder.setTitle(Config.serverAddress, null);
+        embedBuilder.setTitle(Config.get.serverAddress, null);
         embedBuilder.setColor(new Color(0xBF5843));
 
         embedBuilder.addField(
@@ -70,9 +70,9 @@ public class Status {
     }
 
     public static void initialMessage() {
-        Necessity.statusChannel = Necessity.guild.getTextChannelById(Config.statusChannelId);
+        Necessity.statusChannel = Necessity.guild.getTextChannelById(Config.get.statusChannelId);
 
-        if (Config.messageId.isEmpty()) {
+        if (Config.get.messageId.isEmpty()) {
             Necessity.statusChannel.sendMessage(serverOn().build()).queue((message) -> {
                 try {
                     Path config = new File(Necessity.plugin.getDataFolder(), "config.yml").toPath();
@@ -87,7 +87,7 @@ public class Status {
                 }
             });
         } else {
-            Necessity.statusChannel.editMessageById(Config.messageId, serverOn().build()).queue();
+            Necessity.statusChannel.editMessageById(Config.get.messageId, serverOn().build()).queue();
         }
     }
 }

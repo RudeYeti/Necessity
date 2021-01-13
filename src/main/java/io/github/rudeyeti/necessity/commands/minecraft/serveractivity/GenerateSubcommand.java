@@ -8,7 +8,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class GenerateSubcommand {
     public static void execute(CommandSender sender, String label, String[] args) {
-        if (sender.hasPermission("serveractivity.generate") || sender.isOp()) {
+        if (sender.hasPermission("necessity.generate") || sender.isOp()) {
             if (args.length > 1) {
                 Necessity.server.getScheduler().runTaskAsynchronously(
                     Necessity.plugin,

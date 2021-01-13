@@ -8,16 +8,16 @@ import io.github.rudeyeti.necessity.Config;
 import io.github.rudeyeti.necessity.Necessity;
 import io.github.rudeyeti.necessity.utils.Schematic;
 import io.github.rudeyeti.necessity.utils.Whitelist;
-import io.github.rudeyeti.necessity.utils.integration.SyncBuilders;
+import io.github.rudeyeti.necessity.utils.integration.Integration;
 import org.jetbrains.annotations.NotNull;
 
 public class JDAListener extends ListenerAdapter {
     @Override
     public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
-        if (Config.globalRoleChanges) {
-            SyncBuilders.syncAllUsers();
+        if (Config.get.globalRoleChanges) {
+            Integration.syncAllUsers();
         } else if (event.getMember() == Necessity.lastRoleChange) {
-            SyncBuilders.addRole(Necessity.lastRoleChange);
+            Integration.addRole(Necessity.lastRoleChange);
         }
     }
 

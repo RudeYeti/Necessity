@@ -9,11 +9,11 @@ import org.bukkit.entity.Player;
 
 public class StatsSubcommand {
     public static void execute(CommandSender sender) {
-        if (sender.hasPermission("bteintegration.stats") || sender.isOp()) {
+        if (sender.hasPermission("necessity.stats") || sender.isOp()) {
             int playersWithGroup = 0;
 
             for (Player player : Necessity.plugin.getServer().getOnlinePlayers()) {
-                if (Plugins.getPermissions().playerInGroup(player, Config.minecraftRoleName)) {
+                if (Plugins.getPermissions().playerInGroup(player, Config.get.minecraftRoleName)) {
                     playersWithGroup++;
                 }
             }

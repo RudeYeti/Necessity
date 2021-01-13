@@ -17,7 +17,7 @@ import java.util.List;
 public class Generate {
     public static void file(CommandSender sender, String time) {
         try {
-            File dataFolder = Necessity.plugin.getDataFolder();
+            File dataFolder = new File(Necessity.plugin.getDataFolder() + File.separator + "activity");
             File file = new File(dataFolder, "activity.txt");
             String timeString = Time.get(time);
 
@@ -25,6 +25,10 @@ public class Generate {
             if (!NumberUtils.isDigits(timeString)) {
                 sender.sendMessage(ChatColor.RED + timeString);
                 return;
+            }
+
+            if (!dataFolder.exists()) {
+                dataFolder.mkdir();
             }
 
             // Making sure that no files are being overwritten, so instead it makes a new one.

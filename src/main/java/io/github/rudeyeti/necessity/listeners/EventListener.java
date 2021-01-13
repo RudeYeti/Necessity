@@ -15,7 +15,7 @@ public class EventListener implements Listener {
         try {
             Integration.join(event);
             Necessity.onlinePlayers.add(event.getPlayer().getName());
-            Necessity.statusChannel.editMessageById(Config.messageId, Status.serverOn().build()).queue();
+            Necessity.statusChannel.editMessageById(Config.get.messageId, Status.serverOn().build()).queue();
         } catch (NullPointerException ignored) {}
     }
 
@@ -23,7 +23,7 @@ public class EventListener implements Listener {
     public void playerQuitEvent(PlayerQuitEvent event) {
         try {
             Necessity.onlinePlayers.remove(event.getPlayer().getName());
-            Necessity.statusChannel.editMessageById(Config.messageId, Status.serverOn().build()).queue();
+            Necessity.statusChannel.editMessageById(Config.get.messageId, Status.serverOn().build()).queue();
         } catch (NullPointerException ignored) {}
     }
 }

@@ -74,7 +74,7 @@ public final class Necessity extends JavaPlugin {
     @Override
     public void onDisable() {
         try {
-            statusChannel.editMessageById(Config.messageId, Status.serverOff().build()).complete();
+            statusChannel.editMessageById(Config.get.messageId, Status.serverOff().build()).complete();
             DiscordUtil.getJda().removeEventListener(new JDAListener());
             DiscordSRV.api.unsubscribe(new DiscordSRVListener());
         } catch (NullPointerException ignored) {}

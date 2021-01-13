@@ -11,7 +11,7 @@ import java.util.List;
 
 public class LeaderboardSubcommand {
     public static void execute(CommandSender sender) {
-        if (sender.hasPermission("serveractivity.leaderboard") || sender.isOp()) {
+        if (sender.hasPermission("necessity.leaderboard") || sender.isOp()) {
             Necessity.server.getScheduler().runTaskAsynchronously(
                 Necessity.plugin,
                 new BukkitRunnable() {

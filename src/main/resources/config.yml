@@ -10,11 +10,12 @@
 # Default value: "!"
 prefix: "!"
 
+
 # Integration Configuration
 
-# Build Team Members webpage on the BuildTheEarth Website, required to fetch the member list.
-# Default value: "https://buildtheearth.net/buildteams/#/members"
-build-team-members: "https://buildtheearth.net/buildteams/#/members"
+# The API-Key used to access the Build Team API on the BuildTheEarth Website.
+# Default value: "########################################"
+api-key: "########################################"
 
 # Discord Role ID, this should be the exact id of the builder role in the Discord Server.
 # Default value: "##################"
@@ -32,6 +33,18 @@ global-role-changes: true
 # If you want each time a builder is promoted to be logged to the Minecraft Server Console, enable this.
 # Default value: false
 log-role-changes: false
+
+
+# Integration Legacy Mode Configuration
+
+# Whether to not access the Build Team API, but instead use web scraping.
+# Default value: false
+legacy-mode: false
+
+# Build Team Members webpage on the BuildTheEarth Website, required to fetch the member list in legacy mode.
+# Default value: "https://buildtheearth.net/buildteams/#/members"
+build-team-members: "https://buildtheearth.net/buildteams/#/members"
+
 
 # Whitelist Configuration
 
@@ -53,6 +66,7 @@ delete-on-leave: true
 blacklist:
   - ""
 
+
 # Schematics Configuration
 
 # The ID of the Discord Channel which will have schematics posted in it.
@@ -63,6 +77,7 @@ schematics-channel-id: "##################"
 # This is measured in Kilobytes (KB).
 # Default value: "2000"
 size-limit: "2000"
+
 
 # Status Configuration
 

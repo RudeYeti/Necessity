@@ -26,7 +26,7 @@ public class Schematic {
             case 1:
                 return "Usage: The schematic `" + fileName + "` already exists.";
             case 2:
-                return "Usage: The schematic `" + fileName + "` exceeds the file size limit of `" + Config.sizeLimit / 1000 + " MB`.";
+                return "Usage: The schematic `" + fileName + "` exceeds the file size limit of `" + Config.get.sizeLimit + " KB`.";
             case 3:
                 return "The schematic `" + fileName + "` has been successfully uploaded.";
         }
@@ -46,14 +46,14 @@ public class Schematic {
             if (!file.exists()) {
                 try {
                     URLConnection connection = url.openConnection();
-                    connection.setRequestProperty("User-Agent", "SchematicsPlus");
+                    connection.setRequestProperty("User-Agent", "Necessity");
                     connection.connect();
 
                     ReadableByteChannel readableByteChannel = Channels.newChannel(connection.getInputStream());
                     FileOutputStream fileOutputStream = new FileOutputStream(file);
                     int fileSize = IOUtils.toByteArray(connection.getInputStream()).length;
 
-                    if (fileSize > Config.sizeLimit) {
+                    if (fileSize > Integer.parseInt(Config.get.sizeLimit) * 1000) {
                         readableByteChannel.close();
                         fileOutputStream.close();
                         file.delete();
@@ -79,7 +79,7 @@ public class Schematic {
     }
 
     public static void get(GuildMessageReceivedEvent event) {
-        if (event.getGuild() == Necessity.guild && event.getChannel().getId().equals(Config.schematicsChannelId) && !event.getAuthor().isBot()) {
+        if (event.getGuild() == Necessity.guild && event.getChannel().getId().equals(Config.get.schematicsChannelId) && !event.getAuthor().isBot()) {
             File schematicsFolder = new File(Plugins.getWorldEdit().getDataFolder() + File.separator + "schematics");
 
             try {
@@ -107,7 +107,7 @@ public class Schematic {
                         File file = new File(schematicsFolder, fileName);
 
                         if (!file.exists()) {
-                            if (!(attachments.get(0).getSize() > Config.sizeLimit)) {
+                            if (!(attachments.get(0).getSize() > Integer.parseInt(Config.get.sizeLimit) * 1000)) {
                                 attachments.get(0).downloadToFile(file);
                                 event.getChannel().sendMessage(message(3, fileName)).queue();
                             } else {

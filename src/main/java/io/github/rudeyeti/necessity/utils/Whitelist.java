@@ -30,8 +30,8 @@ public class Whitelist {
             textChannel = message.getTextChannel();
             messageContent = message.getContentRaw();
 
-            if (event.getChannel().getId().equals(Config.whitelistChannelId)) {
-                for (String string : Config.blacklist) {
+            if (event.getChannel().getId().equals(Config.get.whitelistChannelId)) {
+                for (String string : Config.get.blacklist) {
                     if (string.equals(messageContent)) {
                         message.delete().queue();
                         textChannel.sendMessage("The specified user `" + messageContent + "` is blacklisted.").queue((message) -> {
@@ -55,7 +55,7 @@ public class Whitelist {
                         message.addReaction("✅").queue();
                     }
 
-                    if (Config.linkAccounts) {
+                    if (Config.get.linkAccounts) {
                         if (DiscordSRV.config().getBoolean("GroupRoleSynchronizationOnLink")) {
                             try {
                                 File dataFolder = DiscordSRV.getPlugin().getDataFolder();
@@ -94,7 +94,7 @@ public class Whitelist {
 
     public static void remove(GuildMemberRemoveEvent event) {
         if (event.getMember().getGuild() == Necessity.guild) {
-            TextChannel channel = Necessity.guild.getTextChannelById(Config.whitelistChannelId);
+            TextChannel channel = Necessity.guild.getTextChannelById(Config.get.whitelistChannelId);
 
             channel.getIterableHistory().cache(false).forEachAsync((message) -> {
 
@@ -105,12 +105,12 @@ public class Whitelist {
                         offlinePlayer.setWhitelisted(false);
                         Necessity.server.reloadWhitelist();
 
-                        if (Config.linkAccounts) {
+                        if (Config.get.linkAccounts) {
                             accountLinkManager.unlink(event.getUser().getId());
                         }
                     }
 
-                    if (Config.deleteOnLeave) {
+                    if (Config.get.deleteOnLeave) {
                         message.delete().queue();
                     } else {
                         message.getReactions().forEach((reaction) ->
