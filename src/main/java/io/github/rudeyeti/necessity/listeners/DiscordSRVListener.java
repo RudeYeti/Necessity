@@ -8,8 +8,8 @@ import github.scarsz.discordsrv.util.DiscordUtil;
 import io.github.rudeyeti.necessity.Config;
 import io.github.rudeyeti.necessity.Necessity;
 import io.github.rudeyeti.necessity.Plugins;
-import io.github.rudeyeti.necessity.utils.Status;
-import io.github.rudeyeti.necessity.utils.integration.Integration;
+import io.github.rudeyeti.necessity.modules.integration.Integration;
+import io.github.rudeyeti.necessity.modules.status.Status;
 
 public class DiscordSRVListener {
     @Subscribe
@@ -29,13 +29,13 @@ public class DiscordSRVListener {
             Necessity.logger.warning("The role with the ID " + Config.get.discordRoleId + " was not found in the Discord Server " + Necessity.guild.getName() + ".");
             Necessity.server.getPluginManager().disablePlugin(Necessity.plugin);
             return;
-        } else if (!ArrayUtils.contains(Plugins.getPermissions().getGroups(), Config.get.minecraftRoleName)) {
+        } else if (!ArrayUtils.contains(Plugins.getVault().getGroups(), Config.get.minecraftRoleName)) {
             Necessity.logger.warning("The minecraft-role-name value " + Config.get.minecraftRoleName + " in the configuration was not registered as a group.");
             Necessity.server.getPluginManager().disablePlugin(Necessity.plugin);
             return;
         }
 
-        Status.initialMessage();
-        Integration.initialRequest();
+        Status.initialize();
+        Integration.initialize();
     }
 }

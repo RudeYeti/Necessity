@@ -1,50 +1,49 @@
 package io.github.rudeyeti.necessity.commands.discord;
 
-import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
 import io.github.rudeyeti.necessity.Config;
 import io.github.rudeyeti.necessity.Necessity;
-import io.github.rudeyeti.necessity.utils.Player;
-import io.github.rudeyeti.necessity.utils.Whitelist;
+import io.github.rudeyeti.necessity.modules.whitelist.Member;
+import io.github.rudeyeti.necessity.modules.whitelist.Player;
 import org.bukkit.OfflinePlayer;
 
 import java.util.UUID;
 
 public class CheckCommand {
     public static void execute() {
-        if (Whitelist.messageContent.startsWith(Config.get.prefix + "check")) {
-            String user = Whitelist.messageContent.replace(Config.get.prefix + "check" + " ", "");
+        if (Member.messageContent.startsWith(Config.get.prefix + "check")) {
+            String user = Member.messageContent.replace(Config.get.prefix + "check" + " ", "");
 
-            if (!user.equals(Whitelist.messageContent)) {
+            if (!user.equals(Member.messageContent)) {
                 if (Player.exists(user)) {
                     OfflinePlayer offlinePlayer = Necessity.server.getOfflinePlayer(user);
-                    String discordId = Whitelist.accountLinkManager.getDiscordId(offlinePlayer.getUniqueId());
+                    String discordId = Member.accountLinkManager.getDiscordId(offlinePlayer.getUniqueId());
 
                     if (discordId != null) {
-                        Member member = Necessity.guild.getMemberById(discordId);
+                        github.scarsz.discordsrv.dependencies.jda.api.entities.Member member = Necessity.guild.getMemberById(discordId);
 
-                        Whitelist.textChannel.sendMessage("Discord Username: `" + member.getUser().getAsTag() + "`").queue();
+                        Member.textChannel.sendMessage("Discord Username: `" + member.getUser().getAsTag() + "`").queue();
                         return;
                     }
                 } else {
-                    if (!Whitelist.message.getMentionedUsers().isEmpty()) {
-                        user = Whitelist.message.getMentionedUsers().get(0).getId();
+                    if (!Member.message.getMentionedUsers().isEmpty()) {
+                        user = Member.message.getMentionedUsers().get(0).getId();
                     }
 
-                    UUID minecraftUuid = Whitelist.accountLinkManager.getUuid(user);
+                    UUID minecraftUuid = Member.accountLinkManager.getUuid(user);
 
                     if (minecraftUuid != null) {
                         OfflinePlayer offlinePlayer = Necessity.server.getOfflinePlayer(minecraftUuid);
 
-                        Whitelist.textChannel.sendMessage("Minecraft Username: `" + offlinePlayer.getName() + "`").queue();
+                        Member.textChannel.sendMessage("Minecraft Username: `" + offlinePlayer.getName() + "`").queue();
                         return;
                     }
                 }
             } else {
-                Whitelist.textChannel.sendMessage("Usage: `" + Config.get.prefix + "check <discord-id | minecraft-username>`").queue();
+                Member.textChannel.sendMessage("Usage: `" + Config.get.prefix + "check <discord-id | minecraft-username>`").queue();
                 return;
             }
 
-            Whitelist.textChannel.sendMessage("The specified user could not be found.").queue();
+            Member.textChannel.sendMessage("The specified user could not be found.").queue();
         }
     }
 }

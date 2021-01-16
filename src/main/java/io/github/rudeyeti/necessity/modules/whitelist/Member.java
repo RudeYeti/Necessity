@@ -1,4 +1,4 @@
-package io.github.rudeyeti.necessity.utils;
+package io.github.rudeyeti.necessity.modules.whitelist;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
@@ -17,14 +17,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.concurrent.TimeUnit;
 
-public class Whitelist {
+public class Member {
 
     public static Message message;
     public static TextChannel textChannel;
     public static String messageContent;
     public static AccountLinkManager accountLinkManager = DiscordSRV.getPlugin().getAccountLinkManager();
 
-    public static void add(GuildMessageReceivedEvent event) {
+    protected static void add(GuildMessageReceivedEvent event) {
         if (event.getGuild() == Necessity.guild && !event.getAuthor().isBot()) {
             message = event.getMessage();
             textChannel = message.getTextChannel();
@@ -92,7 +92,7 @@ public class Whitelist {
         }
     }
 
-    public static void remove(GuildMemberRemoveEvent event) {
+    protected static void remove(GuildMemberRemoveEvent event) {
         if (event.getMember().getGuild() == Necessity.guild) {
             TextChannel channel = Necessity.guild.getTextChannelById(Config.get.whitelistChannelId);
 

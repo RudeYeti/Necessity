@@ -13,7 +13,7 @@ public class StatsSubcommand {
             int playersWithGroup = 0;
 
             for (Player player : Necessity.plugin.getServer().getOnlinePlayers()) {
-                if (Plugins.getPermissions().playerInGroup(player, Config.get.minecraftRoleName)) {
+                if (Plugins.getVault().playerInGroup(player, Config.get.minecraftRoleName)) {
                     playersWithGroup++;
                 }
             }

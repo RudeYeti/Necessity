@@ -1,4 +1,4 @@
-package io.github.rudeyeti.necessity.utils.activity;
+package io.github.rudeyeti.necessity.modules.activity;
 
 import io.github.rudeyeti.necessity.Plugins;
 import io.github.rudeyeti.necessity.Necessity;
@@ -15,7 +15,40 @@ import java.util.Comparator;
 import java.util.List;
 
 public class Generate {
-    public static void file(CommandSender sender, String time) {
+    protected static List<String> activity(String time) {
+        if (Plugins.getCoreProtect() != null) {
+            List<String> lines = new ArrayList<>();
+
+            Necessity.server.getWhitelistedPlayers().forEach((offlinePlayer) -> {
+                int activity = Plugins.getCoreProtect().performLookup(
+                        Integer.parseInt(time), Collections.singletonList(offlinePlayer.getName()), null, null, null, null, 0, null
+                ).size();
+
+                // Formula to count the pages of CoreProtect entries, which is basically the total divided by four.
+                int pages = activity > 0 ? (int) Math.ceil((activity + 1) / 4.0) : 0;
+
+                lines.add(offlinePlayer.getName() + " - " + pages);
+            });
+
+            lines.sort(new Comparator<String>() {
+                public int compare(String line1, String line2) {
+                    // Making sure that there are no repeats in the whitelist.
+                    return line1.equals(line2) ? extractInt(line1) : extractInt(line2) - extractInt(line1);
+                }
+
+                int extractInt(String line) {
+                    // Extracting the number after the Minecraft username.
+                    String number = line.replaceAll(".+ - ", "");
+                    return Integer.parseInt(number);
+                }
+            });
+
+            return lines;
+        }
+        return null;
+    }
+
+    protected static void file(CommandSender sender, String time) {
         try {
             File dataFolder = new File(Necessity.plugin.getDataFolder() + File.separator + "activity");
             File file = new File(dataFolder, "activity.txt");
@@ -55,38 +88,5 @@ public class Generate {
         } catch (IOException error) {
             error.printStackTrace();
         }
-    }
-
-    public static List<String> activity(String time) {
-        if (Plugins.getCoreProtect() != null) {
-            List<String> lines = new ArrayList<>();
-
-            Necessity.server.getWhitelistedPlayers().forEach((offlinePlayer) -> {
-                int activity = Plugins.getCoreProtect().performLookup(
-                        Integer.parseInt(time), Collections.singletonList(offlinePlayer.getName()), null, null, null, null, 0, null
-                ).size();
-
-                // Formula to count the pages of CoreProtect entries, which is basically the total divided by four.
-                int pages = activity > 0 ? (int) Math.ceil((activity + 1) / 4.0) : 0;
-
-                lines.add(offlinePlayer.getName() + " - " + pages);
-            });
-
-            lines.sort(new Comparator<String>() {
-                public int compare(String line1, String line2) {
-                    // Making sure that there are no repeats in the whitelist.
-                    return line1.equals(line2) ? extractInt(line1) : extractInt(line2) - extractInt(line1);
-                }
-
-                int extractInt(String line) {
-                    // Extracting the number after the Minecraft username.
-                    String number = line.replaceAll(".+ - ", "");
-                    return Integer.parseInt(number);
-                }
-            });
-
-            return lines;
-        }
-        return null;
     }
 }

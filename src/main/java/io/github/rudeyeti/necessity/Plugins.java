@@ -11,6 +11,10 @@ public class Plugins {
     public static CoreProtectAPI getCoreProtect() {
         Plugin plugin = Necessity.server.getPluginManager().getPlugin("CoreProtect");
 
+        if (plugin == null) {
+            return null;
+        }
+
         if (!(plugin instanceof CoreProtect)) {
             return null;
         }
@@ -28,7 +32,17 @@ public class Plugins {
         return CoreProtect;
     }
 
-    public static Permission getPermissions() {
+    public static Permission getVault() {
+        Plugin plugin = Necessity.server.getPluginManager().getPlugin("Vault");
+
+        if (plugin == null) {
+            return null;
+        }
+
+        if (!plugin.isEnabled()) {
+            return null;
+        }
+
         RegisteredServiceProvider<Permission> provider = Bukkit.getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
 
         return provider.getProvider();
@@ -36,6 +50,10 @@ public class Plugins {
 
     public static Plugin getWorldEdit() {
         Plugin plugin = Necessity.server.getPluginManager().getPlugin("WorldEdit");
+
+        if (plugin == null) {
+            return null;
+        }
 
         if (!plugin.isEnabled()) {
             return null;

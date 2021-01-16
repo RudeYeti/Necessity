@@ -4,6 +4,17 @@
 # This depends on DiscordSRV, a requirement for this plugin to work.
 # Certain features rely on optional plugins like CoreProtect or WorldEdit.
 
+# Module Configuration
+
+# These enable certain modules which are usable for various tasks.
+# Default values: false
+integration: false
+whitelist: false
+activity: false
+schematics: false
+status: false
+
+
 # Discord Configuration
 
 # The prefix used for the various Discord Commands.

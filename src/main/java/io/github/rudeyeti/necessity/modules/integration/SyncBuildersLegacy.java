@@ -1,4 +1,4 @@
-package io.github.rudeyeti.necessity.utils.integration;
+package io.github.rudeyeti.necessity.modules.integration;
 
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
 import io.github.rudeyeti.necessity.Config;
@@ -12,9 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SyncBuildersLegacy {
-    public static int membersSize;
+    protected static int membersSize;
 
-    public synchronized static Document getWebsite(int pageNumber) {
+    protected synchronized static Document getWebsite(int pageNumber) {
         try {
             return Jsoup.connect(Config.get.buildTeamMembers + "?page=" + pageNumber).userAgent("Necessity").get();
         } catch (IOException error) {
@@ -23,7 +23,7 @@ public class SyncBuildersLegacy {
         }
     }
 
-    public synchronized static List<Member> getWebsiteMembersList() {
+    protected synchronized static List<Member> getWebsiteMembersList() {
         List<Member> members = new ArrayList<>();
         membersSize = 0;
 

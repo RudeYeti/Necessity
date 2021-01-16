@@ -12,6 +12,12 @@ public class Config {
     public static Configuration config;
 
     public static class get {
+        // Module Configuration
+        public static boolean integration;
+        public static boolean whitelist;
+        public static boolean activity;
+        public static boolean schematics;
+        public static boolean status;
         // Discord Configuration
         public static String prefix;
         // Integration Configuration
@@ -44,7 +50,7 @@ public class Config {
     }
 
     private static String message(String option, String message) {
-        return "The " + option + " value in the configuration must be " + message;
+        return "Usage: The " + option + " value in the configuration must be " + message;
     }
 
     public static void updateConfig() {
@@ -89,12 +95,13 @@ public class Config {
             if (!option.equals("prefix") && config.get(option) instanceof String && config.getString(option).contains("#")) {
                 boolean isBTM = option.equals("build-team-members");
 
-                if (!isBTM || isBTM && config.get("legacy-mode") instanceof Boolean && config.getBoolean("legacy-mode")) {
+                if (!isBTM || config.get("legacy-mode") instanceof Boolean && config.getBoolean("legacy-mode")) {
                     isValid = false;
                     Necessity.logger.severe(message(option, "modified from " + config.get(option) + "."));
                 }
             }
         }
+
         return isValid;
     }
 }

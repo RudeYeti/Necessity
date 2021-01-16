@@ -12,7 +12,8 @@ import io.github.rudeyeti.necessity.commands.minecraft.ServerActivityCommand;
 import io.github.rudeyeti.necessity.listeners.DiscordSRVListener;
 import io.github.rudeyeti.necessity.listeners.EventListener;
 import io.github.rudeyeti.necessity.listeners.JDAListener;
-import io.github.rudeyeti.necessity.utils.Status;
+import io.github.rudeyeti.necessity.modules.ModuleManager;
+import io.github.rudeyeti.necessity.modules.status.Status;
 import org.bukkit.Server;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -53,14 +54,18 @@ public final class Necessity extends JavaPlugin {
             return;
         }
 
-        if (!server.hasWhitelist()) {
+        ModuleManager.initialize();
+
+        if (Config.get.whitelist && !server.hasWhitelist()) {
             server.setWhitelist(true);
         }
 
-        // Should almost always be none, unless the plugin has somehow been reloaded.
-        server.getOnlinePlayers().forEach((player) -> {
-            onlinePlayers.add(player.getName());
-        });
+        if (Config.get.status) {
+            // Should almost always be none, unless the plugin has somehow been reloaded.
+            server.getOnlinePlayers().forEach((player) -> {
+                onlinePlayers.add(player.getName());
+            });
+        }
 
         server.getPluginManager().registerEvents(new EventListener(), this);
         this.getCommand("necessity").setExecutor(new NecessityCommand());
@@ -74,7 +79,10 @@ public final class Necessity extends JavaPlugin {
     @Override
     public void onDisable() {
         try {
-            statusChannel.editMessageById(Config.get.messageId, Status.serverOff().build()).complete();
+            if (Config.get.status) {
+                statusChannel.editMessageById(Config.get.messageId, Status.serverOff().build()).complete();
+            }
+
             DiscordUtil.getJda().removeEventListener(new JDAListener());
             DiscordSRV.api.unsubscribe(new DiscordSRVListener());
         } catch (NullPointerException ignored) {}

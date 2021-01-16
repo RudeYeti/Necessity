@@ -6,9 +6,11 @@ import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.GuildM
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import io.github.rudeyeti.necessity.Config;
 import io.github.rudeyeti.necessity.Necessity;
-import io.github.rudeyeti.necessity.utils.Schematic;
-import io.github.rudeyeti.necessity.utils.Whitelist;
-import io.github.rudeyeti.necessity.utils.integration.Integration;
+import io.github.rudeyeti.necessity.modules.integration.Integration;
+import io.github.rudeyeti.necessity.modules.schematics.File;
+import io.github.rudeyeti.necessity.modules.schematics.Schematics;
+import io.github.rudeyeti.necessity.modules.whitelist.Member;
+import io.github.rudeyeti.necessity.modules.whitelist.Whitelist;
 import org.jetbrains.annotations.NotNull;
 
 public class JDAListener extends ListenerAdapter {
@@ -23,7 +25,7 @@ public class JDAListener extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
-        Schematic.get(event);
+        Schematics.get(event);
         Whitelist.add(event);
     }
 

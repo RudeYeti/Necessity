@@ -1,11 +1,11 @@
-package io.github.rudeyeti.necessity.utils.activity;
+package io.github.rudeyeti.necessity.modules.activity;
 
 import org.apache.commons.lang.math.NumberUtils;
 
 import java.time.Duration;
 
 public class Time {
-    public static String get(String time) {
+    protected static String get(String time) {
         // The time must have a unit at the end.
         if (!NumberUtils.isDigits(time)) {
             String regex = "(s(econds?)?|m(inutes?)?|h(ours?)?|d(ays?)?|w(eeks?)?)";

@@ -1,4 +1,4 @@
-package io.github.rudeyeti.necessity.utils;
+package io.github.rudeyeti.necessity.modules.status;
 
 import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import io.github.rudeyeti.necessity.Config;
@@ -10,8 +10,30 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class Status {
-    public static EmbedBuilder serverOn() {
+public class Messages {
+    protected static void initialize() {
+        Necessity.statusChannel = Necessity.guild.getTextChannelById(Config.get.statusChannelId);
+
+        if (Config.get.messageId.isEmpty()) {
+            Necessity.statusChannel.sendMessage(serverOn().build()).queue((message) -> {
+                try {
+                    Path config = new File(Necessity.plugin.getDataFolder(), "config.yml").toPath();
+                    String content = new String(Files.readAllBytes(config));
+                    content = content.replaceAll("message-id: \"\"", "message-id: \"" + message.getId() + "\"");
+
+                    Files.write(config, content.getBytes());
+                    Necessity.plugin.reloadConfig();
+                    Config.updateConfig();
+                } catch (IOException error) {
+                    error.printStackTrace();
+                }
+            });
+        } else {
+            Necessity.statusChannel.editMessageById(Config.get.messageId, serverOn().build()).queue();
+        }
+    }
+
+    protected static EmbedBuilder serverOn() {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         int onlinePlayers = Necessity.onlinePlayers.size();
 
@@ -54,7 +76,7 @@ public class Status {
         return embedBuilder;
     }
 
-    public static EmbedBuilder serverOff() {
+    protected static EmbedBuilder serverOff() {
         EmbedBuilder embedBuilder = new EmbedBuilder();
 
         embedBuilder.setTitle(Config.get.serverAddress, null);
@@ -67,27 +89,5 @@ public class Status {
         );
 
         return embedBuilder;
-    }
-
-    public static void initialMessage() {
-        Necessity.statusChannel = Necessity.guild.getTextChannelById(Config.get.statusChannelId);
-
-        if (Config.get.messageId.isEmpty()) {
-            Necessity.statusChannel.sendMessage(serverOn().build()).queue((message) -> {
-                try {
-                    Path config = new File(Necessity.plugin.getDataFolder(), "config.yml").toPath();
-                    String content = new String(Files.readAllBytes(config));
-                    content = content.replaceAll("message-id: \"\"", "message-id: \"" + message.getId() + "\"");
-
-                    Files.write(config, content.getBytes());
-                    Necessity.plugin.reloadConfig();
-                    Config.updateConfig();
-                } catch (IOException error) {
-                    error.printStackTrace();
-                }
-            });
-        } else {
-            Necessity.statusChannel.editMessageById(Config.get.messageId, serverOn().build()).queue();
-        }
     }
 }

@@ -1,4 +1,4 @@
-package io.github.rudeyeti.necessity.utils.integration;
+package io.github.rudeyeti.necessity.modules.integration;
 
 import github.scarsz.discordsrv.dependencies.jackson.core.JsonProcessingException;
 import github.scarsz.discordsrv.dependencies.jackson.databind.JsonNode;
@@ -15,9 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SyncBuilders {
-    public static int membersSize;
+    protected static int membersSize;
 
-    public synchronized static Document getWebsite() {
+    protected synchronized static Document getWebsite() {
         try {
             return Jsoup.connect("https://buildtheearth.net/api/v1/members")
                     .header("Host", "buildtheearth.net")
@@ -30,7 +30,7 @@ public class SyncBuilders {
         }
     }
 
-    public synchronized static ArrayNode getBuilders(Document document) {
+    protected synchronized static ArrayNode getBuilders(Document document) {
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode jsonObject = mapper.readTree(document.select("body").text());
@@ -41,7 +41,7 @@ public class SyncBuilders {
         }
     }
 
-    public synchronized static List<Member> getWebsiteMembersList() {
+    protected synchronized static List<Member> getWebsiteMembersList() {
         List<Member> members = new ArrayList<>();
         ArrayNode arrayNode = getBuilders(getWebsite());
         membersSize = 0;

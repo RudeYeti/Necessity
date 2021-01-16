@@ -1,7 +1,8 @@
 package io.github.rudeyeti.necessity.commands.minecraft.serveractivity;
 
 import io.github.rudeyeti.necessity.Necessity;
-import io.github.rudeyeti.necessity.utils.activity.Generate;
+import io.github.rudeyeti.necessity.modules.activity.Activity;
+import io.github.rudeyeti.necessity.modules.activity.Generate;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -21,7 +22,7 @@ public class LeaderboardSubcommand {
 
                         sender.sendMessage("Retrieving leaderboard...");
 
-                        List<String> lines = Generate.activity(time);
+                        List<String> lines = Activity.activity(time);
 
                         if (lines.size() > 4) {
                             sender.sendMessage("Leaderboard:\n" +

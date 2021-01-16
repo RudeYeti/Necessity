@@ -1,4 +1,4 @@
-package io.github.rudeyeti.necessity.utils;
+package io.github.rudeyeti.necessity.modules.whitelist;
 
 import java.io.IOException;
 import java.net.URL;

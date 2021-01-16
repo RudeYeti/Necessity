@@ -1,4 +1,4 @@
-package io.github.rudeyeti.necessity.utils;
+package io.github.rudeyeti.necessity.modules.schematics;
 
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -7,7 +7,6 @@ import io.github.rudeyeti.necessity.Necessity;
 import io.github.rudeyeti.necessity.Plugins;
 import org.apache.commons.io.IOUtils;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -18,8 +17,8 @@ import java.nio.channels.ReadableByteChannel;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class Schematic {
-    public static String message(int id, String fileName) {
+public class File {
+    protected static String message(int id, String fileName) {
         switch (id) {
             case 0:
                 return "Usage: The specified file `" + fileName + "`must be a schematic.";
@@ -33,14 +32,14 @@ public class Schematic {
         return null;
     }
 
-    public static void errorMessage(GuildMessageReceivedEvent event, String errorMessage) {
+    protected static void errorMessage(GuildMessageReceivedEvent event, String errorMessage) {
         event.getChannel().sendMessage(errorMessage).complete().delete().completeAfter(3, TimeUnit.SECONDS);
         event.getMessage().delete().queue();
     }
 
-    public static String download(URL url, File destFolder) {
-        String fileName = new File(url.getPath()).getName();
-        File file = new File(destFolder, fileName);
+    protected static String download(URL url, java.io.File destFolder) {
+        String fileName = new java.io.File(url.getPath()).getName();
+        java.io.File file = new java.io.File(destFolder, fileName);
 
         if (fileName.endsWith(".schematic")) {
             if (!file.exists()) {
@@ -78,9 +77,9 @@ public class Schematic {
         return "Usage: An unknown error occurred when attempting to download the file `" + fileName + "`.";
     }
 
-    public static void get(GuildMessageReceivedEvent event) {
+    protected static void get(GuildMessageReceivedEvent event) {
         if (event.getGuild() == Necessity.guild && event.getChannel().getId().equals(Config.get.schematicsChannelId) && !event.getAuthor().isBot()) {
-            File schematicsFolder = new File(Plugins.getWorldEdit().getDataFolder() + File.separator + "schematics");
+            java.io.File schematicsFolder = new java.io.File(Plugins.getWorldEdit().getDataFolder() + java.io.File.separator + "schematics");
 
             try {
                 if (!schematicsFolder.exists()) {
@@ -104,20 +103,20 @@ public class Schematic {
                     String fileName = attachments.get(0).getFileName();
 
                     if (fileName.endsWith(".schematic")) {
-                        File file = new File(schematicsFolder, fileName);
+                        java.io.File file = new java.io.File(schematicsFolder, fileName);
 
                         if (!file.exists()) {
                             if (!(attachments.get(0).getSize() > Integer.parseInt(Config.get.sizeLimit) * 1000)) {
                                 attachments.get(0).downloadToFile(file);
                                 event.getChannel().sendMessage(message(3, fileName)).queue();
                             } else {
-                                errorMessage(event, Schematic.message(2, fileName));
+                                errorMessage(event, File.message(2, fileName));
                             }
                         } else {
-                            errorMessage(event, Schematic.message(1, fileName));
+                            errorMessage(event, File.message(1, fileName));
                         }
                     } else {
-                        errorMessage(event, Schematic.message(0, fileName));
+                        errorMessage(event, File.message(0, fileName));
                     }
                 } else {
                     errorMessage(event, "Usage: The message must either contain a link or have a schematic attached to it.");
