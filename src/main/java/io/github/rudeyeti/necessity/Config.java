@@ -3,9 +3,7 @@ package io.github.rudeyeti.necessity;
 import org.bukkit.configuration.Configuration;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class Config {
 
@@ -65,43 +63,77 @@ public class Config {
         }
     }
 
-    public static boolean validateConfig() {
+    public static boolean validateConfig(boolean logToConsole) {
         boolean isValid = true;
 
         for (Field field : variables) {
             String option = format(field);
-            String configType = config.get(option).getClass().getSimpleName().toLowerCase();
+            Object value = config.get(option);
+            String configType = value.getClass().getSimpleName().toLowerCase();
             String fieldType = field.getType().getSimpleName().toLowerCase();
 
-            if (!configType.equals(fieldType)) {
+            if (!configType.equals(fieldType) || value instanceof String && ((String) value).contains("\"")) {
                 isValid = false;
 
-                switch (fieldType) {
-                    case "boolean":
-                        Necessity.logger.severe(message(option, "either true or false."));
-                        break;
-                    case "string":
-                        Necessity.logger.severe(message(option, "enclosed in quotes."));
-                        break;
-                    case "arraylist":
-                        Necessity.logger.severe(message(option, "a list."));
-                        break;
-                    default:
-                        Necessity.logger.severe(message(option, "of type " + fieldType + "."));
-                        break;
+                if (logToConsole) {
+                    switch (fieldType) {
+                        case "boolean":
+                            Necessity.logger.severe(message(option, "either true or false."));
+                            break;
+                        case "string":
+                            Necessity.logger.severe(message(option, "enclosed in quotes."));
+                            break;
+                        case "arraylist":
+                            Necessity.logger.severe(message(option, "a list."));
+                            break;
+                        default:
+                            Necessity.logger.severe(message(option, "of type " + fieldType + "."));
+                            break;
+                    }
                 }
             }
 
-            if (!option.equals("prefix") && config.get(option) instanceof String && config.getString(option).contains("#")) {
+            if (!option.equals("prefix") && value instanceof String && ((String) value).contains("#")) {
                 boolean isBTM = option.equals("build-team-members");
 
                 if (!isBTM || config.get("legacy-mode") instanceof Boolean && config.getBoolean("legacy-mode")) {
                     isValid = false;
-                    Necessity.logger.severe(message(option, "modified from " + config.get(option) + "."));
+
+                    if (logToConsole) {
+                        Necessity.logger.severe(message(option, "modified from " + value + "."));
+                    }
                 }
             }
         }
 
         return isValid;
     }
+
+    public static Map<String, Object> getValues(boolean getValid) {
+        Map<String, Object> hashMap = new HashMap<>();
+
+        for (Field field : variables) {
+            String option = format(field);
+            Object value = config.get(option);
+            String configType = value.getClass().getSimpleName().toLowerCase();
+            String fieldType = field.getType().getSimpleName().toLowerCase();
+
+            if (!getValid && (!configType.equals(fieldType) || value instanceof String && ((String) value).contains("\""))) {
+                hashMap.put(option, value);
+            } else if (getValid) {
+                hashMap.put(option, value);
+            }
+
+            if (!option.equals("prefix") && value instanceof String && ((String) value).contains("#")) {
+                boolean isBTM = option.equals("build-team-members");
+
+                if (!getValid && (!isBTM || config.get("legacy-mode") instanceof Boolean && config.getBoolean("legacy-mode"))) {
+                    hashMap.put(option, value);
+                }
+            }
+        }
+
+        return hashMap;
+    }
+
 }

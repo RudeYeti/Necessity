@@ -47,7 +47,7 @@ public final class Necessity extends JavaPlugin {
         Config.config = plugin.getConfig();
         plugin.saveDefaultConfig();
 
-        if (Config.validateConfig()) {
+        if (Config.validateConfig(true)) {
             Config.updateConfig();
         } else {
             server.getPluginManager().disablePlugin(plugin);
