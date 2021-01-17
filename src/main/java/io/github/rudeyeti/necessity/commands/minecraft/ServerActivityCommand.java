@@ -41,6 +41,6 @@ public class ServerActivityCommand implements CommandExecutor, TabExecutor {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         // Return an empty list instead of null, so the player name does not keep appearing in the command arguments.
-        return (args.length <= 1) ? StringUtil.copyPartialMatches(args[0], Arrays.asList("generate", "leaderboard", "rank"), new ArrayList<>()) : Collections.singletonList("");
+        return (args.length < 2) ? StringUtil.copyPartialMatches(args[0], Arrays.asList("generate", "leaderboard", "rank"), new ArrayList<>()) : Collections.singletonList("");
     }
 }

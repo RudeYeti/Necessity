@@ -2,6 +2,7 @@ package io.github.rudeyeti.necessity.commands.minecraft.necessity;
 
 import io.github.rudeyeti.necessity.Necessity;
 import io.github.rudeyeti.necessity.Config;
+import io.github.rudeyeti.necessity.utils.Control;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -45,10 +46,18 @@ public class ReloadSubcommand {
                     Necessity.plugin.reloadConfig();
                     Config.updateConfig();
 
-                    sender.sendMessage(ChatColor.RED + "Usage: The configuration was invalid. Reverting back to the previous state.");
+                    if (Control.isEnabled) {
+                        sender.sendMessage(ChatColor.RED + "Usage: The configuration is invalid. Reverting back to the previous state.");
+                    } else {
+                        sender.sendMessage(ChatColor.RED + "Usage: The configuration is still invalid. It needs to be modified before starting the plugin.");
+                    }
                 } else {
-                    Config.updateConfig();
-                    sender.sendMessage("The plugin has been successfully reloaded.");
+                    if (Control.isEnabled) {
+                        Config.updateConfig();
+                        sender.sendMessage("The plugin has been successfully reloaded.");
+                    } else {
+                        Control.enable();
+                    }
                 }
             } catch (IOException error) {
                 error.printStackTrace();

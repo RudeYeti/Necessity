@@ -57,6 +57,7 @@ public class Config {
         for (Field field : variables) {
             try {
                 field.set(field.getType(), config.get(format(field)));
+            } catch (IllegalArgumentException ignored) {
             } catch (IllegalAccessException error) {
                 error.printStackTrace();
             }

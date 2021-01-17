@@ -14,7 +14,10 @@ import io.github.rudeyeti.necessity.listeners.EventListener;
 import io.github.rudeyeti.necessity.listeners.JDAListener;
 import io.github.rudeyeti.necessity.modules.ModuleManager;
 import io.github.rudeyeti.necessity.modules.status.Status;
+import io.github.rudeyeti.necessity.utils.Control;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Server;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -47,33 +50,9 @@ public final class Necessity extends JavaPlugin {
         Config.config = plugin.getConfig();
         plugin.saveDefaultConfig();
 
-        if (Config.validateConfig(true)) {
-            Config.updateConfig();
-        } else {
-            server.getPluginManager().disablePlugin(plugin);
-            return;
-        }
-
-        ModuleManager.initialize();
-
-        if (Config.get.whitelist && !server.hasWhitelist()) {
-            server.setWhitelist(true);
-        }
-
-        if (Config.get.status) {
-            // Should almost always be none, unless the plugin has somehow been reloaded.
-            server.getOnlinePlayers().forEach((player) -> {
-                onlinePlayers.add(player.getName());
-            });
-        }
-
-        server.getPluginManager().registerEvents(new EventListener(), this);
-        this.getCommand("necessity").setExecutor(new NecessityCommand());
-        this.getCommand("serveractivity").setExecutor(new ServerActivityCommand());
-
         DiscordSRV.api.requireIntent(GatewayIntent.GUILD_MESSAGES);
         DiscordSRV.api.requireIntent(GatewayIntent.GUILD_MEMBERS);
-        DiscordSRV.api.subscribe(new DiscordSRVListener());
+        Control.enable();
     }
 
     @Override
