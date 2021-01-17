@@ -1,22 +1,28 @@
 package io.github.rudeyeti.necessity.modules.integration;
 
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
+import github.scarsz.discordsrv.dependencies.okhttp3.OkHttpClient;
+import github.scarsz.discordsrv.dependencies.okhttp3.Request;
+import github.scarsz.discordsrv.dependencies.okhttp3.ResponseBody;
 import io.github.rudeyeti.necessity.Config;
 import io.github.rudeyeti.necessity.Necessity;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SyncBuildersLegacy {
     protected static int membersSize;
 
-    protected synchronized static Document getWebsite(int pageNumber) {
+    protected synchronized static ResponseBody getWebsite(int pageNumber) {
         try {
-            return Jsoup.connect(Config.get.buildTeamMembers + "?page=" + pageNumber).userAgent("Necessity").get();
+            Request request = new Request.Builder()
+                    .url(Config.get.buildTeamMembers + "?page=" + pageNumber)
+                    .header("User-Agent", "Necessity")
+                    .build();
+            return new OkHttpClient().newCall(request).execute().body();
         } catch (IOException error) {
             error.printStackTrace();
             return null;
@@ -28,11 +34,10 @@ public class SyncBuildersLegacy {
         membersSize = 0;
 
         for (int i = 1; i < Necessity.lastPage + 1; i++) {
-            Elements td = getWebsite(i).select("td");
+            List<String> builders = Html.getBuilders(getWebsite(i));
 
-            for (int a = 1; a < td.size(); a += 3) {
-                String username = td.get(a).text();
-                Member member = Necessity.guild.getMemberByTag(username);
+            for (int a = 1; a < builders.size(); a += 3) {
+                Member member = Necessity.guild.getMemberByTag(builders.get(a));
                 membersSize++;
 
                 if (member != null) {

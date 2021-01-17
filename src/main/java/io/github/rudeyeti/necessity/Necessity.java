@@ -6,6 +6,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.GatewayIntent;
+import github.scarsz.discordsrv.dependencies.okhttp3.ResponseBody;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import io.github.rudeyeti.necessity.commands.minecraft.NecessityCommand;
 import io.github.rudeyeti.necessity.commands.minecraft.ServerActivityCommand;
@@ -32,6 +33,7 @@ public final class Necessity extends JavaPlugin {
     public static Logger logger;
     public static Guild guild;
     public static Role builderRole;
+    public static ResponseBody membersFirstPage;
     public static List<Member> initialBuildTeamMembersList;
     public static Member lastRoleChange;
     public static int lastPage;

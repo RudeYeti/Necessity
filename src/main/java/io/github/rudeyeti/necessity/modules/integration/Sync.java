@@ -2,28 +2,30 @@ package io.github.rudeyeti.necessity.modules.integration;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
+import github.scarsz.discordsrv.dependencies.okhttp3.ResponseBody;
 import io.github.rudeyeti.necessity.Config;
 import io.github.rudeyeti.necessity.Necessity;
 import io.github.rudeyeti.necessity.Plugins;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.jsoup.nodes.Document;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Sync {
+    private static void getMembersFirstPage() {
+        Necessity.membersFirstPage = Config.get.legacyMode ? SyncBuildersLegacy.getWebsite(1) : SyncBuilders.getWebsite();
+    }
+
     protected static void initialize() {
         try {
             if (Config.get.integration) {
-                Document membersFirstPage = Config.get.legacyMode ? SyncBuildersLegacy.getWebsite(1) : SyncBuilders.getWebsite();
-                String initialBuilders = Config.get.legacyMode ? membersFirstPage.select("small").text() : String.valueOf(SyncBuilders.getBuilders(membersFirstPage).size());
+                getMembersFirstPage();
+                String initialBuilders = Html.getBuilderCount(Necessity.membersFirstPage);
 
-                if (Config.get.legacyMode) {
-                    try {
-                        Necessity.lastPage = Integer.parseInt(membersFirstPage.select("div.pagination").select("a").last().text());
-                    } catch (NullPointerException error) {
-                        Necessity.lastPage = 1;
-                    }
-                }
+                getMembersFirstPage();
+                Html.setLastPage(Necessity.membersFirstPage);
 
                 if (!Config.get.globalRoleChanges) {
                     Necessity.initialBuildTeamMembersList = Config.get.legacyMode ? SyncBuildersLegacy.getWebsiteMembersList() : SyncBuilders.getWebsiteMembersList();
@@ -32,8 +34,8 @@ public class Sync {
                 while (true) {
                     Thread.sleep(1000);
 
-                    membersFirstPage = Config.get.legacyMode ? SyncBuildersLegacy.getWebsite(1) : SyncBuilders.getWebsite();
-                    String builders = Config.get.legacyMode ? membersFirstPage.select("small").text() : String.valueOf(SyncBuilders.getBuilders(membersFirstPage).size());
+                    getMembersFirstPage();
+                    String builders = Html.getBuilderCount(Necessity.membersFirstPage);
 
                     if (initialBuilders.equals(builders)) {
                         continue;
@@ -47,16 +49,11 @@ public class Sync {
 
                     initialBuilders = builders;
 
-                    if (Config.get.legacyMode) {
-                        try {
-                            Necessity.lastPage = Integer.parseInt(membersFirstPage.select("div.pagination").select("a").last().text());
-                        } catch (NullPointerException error) {
-                            Necessity.lastPage = 1;
-                        }
-                    }
+                    getMembersFirstPage();
+                    Html.setLastPage(Necessity.membersFirstPage);
                 }
             }
-        } catch(InterruptedException error) {
+        } catch (InterruptedException error) {
             error.printStackTrace();
         }
     }
