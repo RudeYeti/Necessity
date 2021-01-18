@@ -1,9 +1,10 @@
 package io.github.rudeyeti.necessity.commands.minecraft;
 
-import org.bukkit.command.CommandSender;
+import io.github.rudeyeti.necessity.Config;
+import org.bukkit.util.StringUtil;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CommandManager {
     private static String removeLast(String string, String regex) {
@@ -23,6 +24,19 @@ public class CommandManager {
         return list[0];
     }
 
+    public static boolean executeSubcommands(String command, Map<String, List<String>> subcommands, Map<String, Runnable> executor) {
+        AtomicBoolean hasExecuted = new AtomicBoolean(false);
+
+        executor.forEach((name, execute) -> {
+            if (command.matches(subcommands.get(name).get(1))) {
+                execute.run();
+                hasExecuted.set(true);
+            }
+        });
+
+        return hasExecuted.get();
+    }
+
     public static String usage(String label, Map<String, List<String>> subcommands) {
         final String[] args = {""};
 
@@ -33,5 +47,14 @@ public class CommandManager {
         args[0] = removeLast(args[0], " \\| ");
 
         return "Usage: /" + label + " <" + args[0] + ">";
+    }
+
+    public static List<String> tabComplete(boolean isReady, String[] args, Map<String, List<String>> subcommands) {
+        // Return an empty list instead of null, so the player name does not keep appearing in the command arguments.
+        if (isReady) {
+            return StringUtil.copyPartialMatches(args[0], new ArrayList<>(subcommands.keySet()), new ArrayList<>());
+        } else {
+            return Collections.singletonList("");
+        }
     }
 }

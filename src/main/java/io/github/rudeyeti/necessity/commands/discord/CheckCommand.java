@@ -31,7 +31,7 @@ public class CheckCommand {
             if (discordId != null) {
                 Member member = Necessity.guild.getMemberById(discordId);
                 CommandManager.textChannel.sendMessage("Discord Username: `" + member.getUser().getAsTag() + "`\n" +
-                                                       "Discord ID: `" + discordId + "`").queue();
+                                                            "Discord ID: `" + discordId + "`").queue();
                 return;
             }
         } else {
@@ -48,7 +48,7 @@ public class CheckCommand {
             if (minecraftUuid != null) {
                 OfflinePlayer offlinePlayer = Necessity.server.getOfflinePlayer(minecraftUuid);
                 CommandManager.textChannel.sendMessage("Minecraft Username: `" + offlinePlayer.getName() + "`\n" +
-                                                       "Minecraft UUID: `" + minecraftUuid + "`").queue();
+                                                            "Minecraft UUID: `" + minecraftUuid + "`").queue();
                 return;
             }
         }

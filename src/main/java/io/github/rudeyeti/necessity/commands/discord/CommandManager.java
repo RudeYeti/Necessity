@@ -49,6 +49,9 @@ public class CommandManager {
                             }
 
                             execute.run();
+                        } else if (arguments.get(name).length() == 0) {
+                            args.set(0, args.get(0).substring(1));
+                            execute.run();
                         } else {
                             textChannel.sendMessage("Usage: `" + Config.get.prefix + name + " " + arguments.get(name) + "`").queue();
                         }
