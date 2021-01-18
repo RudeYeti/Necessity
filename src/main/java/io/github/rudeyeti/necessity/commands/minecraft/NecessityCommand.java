@@ -12,34 +12,36 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.util.StringUtil;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class NecessityCommand implements CommandExecutor, TabExecutor {
+
+    public static Map<String, List<String>> subcommands = new HashMap<>();
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (args.length == 0) {
-            String subcommands = "List of available subcommands:\n";
-            String reload = "reload - Updates any values that were modified in the configuration.";
+        subcommands.put("info", Arrays.asList("Shows details about the author and the version of this plugin.", "i(nfo)?(rmation)?|authors?|ver(sion)?"));
+        subcommands.put("reload", Arrays.asList("Updates any values that were modified in the configuration.", "r(e?(load|start|boot))?|(en|dis)able"));
+        subcommands.put("stats", Arrays.asList("Lists different information regarding the members.", "s(tat)?(istic)?s?"));
 
+        if (args.length == 0) {
             if (Control.isEnabled) {
-                sender.sendMessage(subcommands +
-                                   "info - Shows details about the author and the version of this plugin.\n" +
-                                   reload + "\n" +
-                                   "stats - Lists different information regarding the members.");
+                sender.sendMessage(CommandManager.listSubcommands(subcommands));
             } else {
-                sender.sendMessage(subcommands + reload);
+                Map<String, List<String>> reload = new HashMap<>();
+
+                reload.put("reload", subcommands.get("reload"));
+                sender.sendMessage(CommandManager.listSubcommands(reload));
             }
-        } else if (Control.isEnabled && args[0].matches("i(nfo)?(rmation)?|authors?|ver(sion)?")) {
+        } else if (Control.isEnabled && args[0].matches(subcommands.get("info").get(1))) {
             InfoSubcommand.execute(sender);
-        } else if (args[0].matches("r(e?(load|start|boot))?|(en|dis)able")) {
+        } else if (args[0].matches(subcommands.get("reload").get(1))) {
             ReloadSubcommand.execute(sender);
-        } else if (Control.isEnabled && args[0].matches("s(tat)?(istic)?s?")) {
+        } else if (Control.isEnabled && args[0].matches(subcommands.get("stats").get(1))) {
             StatsSubcommand.execute(sender);
         } else {
-            String usage = Control.isEnabled ? "Usage: /" + label + " <info | reload | stats>" : "Usage: /" + label + " <reload>";
+            String usage = Control.isEnabled ? CommandManager.usage(label, subcommands) : "Usage: /" + label + " <reload>";
             sender.sendMessage(ChatColor.RED + usage);
         }
         return true;
@@ -49,7 +51,7 @@ public class NecessityCommand implements CommandExecutor, TabExecutor {
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         // Return an empty list instead of null, so the player name does not keep appearing in the command arguments.
         if (args.length < 2) {
-            List<String> list = Control.isEnabled ? Arrays.asList("info", "reload", "stats") : Collections.singletonList("reload");
+            List<String> list = Control.isEnabled ? new ArrayList<>(subcommands.keySet()) : Collections.singletonList("reload");
             return StringUtil.copyPartialMatches(args[0], list, new ArrayList<>());
         } else {
             return Collections.singletonList("");
