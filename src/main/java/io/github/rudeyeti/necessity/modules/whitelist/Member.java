@@ -1,14 +1,13 @@
 package io.github.rudeyeti.necessity.modules.whitelist;
 
 import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import github.scarsz.discordsrv.objects.managers.AccountLinkManager;
 import io.github.rudeyeti.necessity.Config;
 import io.github.rudeyeti.necessity.Necessity;
-import io.github.rudeyeti.necessity.commands.discord.CheckCommand;
+import io.github.rudeyeti.necessity.utils.Player;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -19,21 +18,17 @@ import java.util.concurrent.TimeUnit;
 
 public class Member {
 
-    public static Message message;
-    public static TextChannel textChannel;
-    public static String messageContent;
-    public static AccountLinkManager accountLinkManager = DiscordSRV.getPlugin().getAccountLinkManager();
+    protected static AccountLinkManager accountLinkManager = DiscordSRV.getPlugin().getAccountLinkManager();
 
     protected static void add(GuildMessageReceivedEvent event) {
         if (event.getGuild() == Necessity.guild && !event.getAuthor().isBot()) {
-            message = event.getMessage();
-            textChannel = message.getTextChannel();
-            messageContent = message.getContentRaw();
+            TextChannel textChannel = event.getMessage().getTextChannel();
+            String messageContent = event.getMessage().getContentRaw();
 
             if (event.getChannel().getId().equals(Config.get.whitelistChannelId)) {
                 for (String string : Config.get.blacklist) {
                     if (string.equals(messageContent)) {
-                        message.delete().queue();
+                        event.getMessage().delete().queue();
                         textChannel.sendMessage("The specified user `" + messageContent + "` is blacklisted.").queue((message) -> {
                             message.delete().queueAfter(3, TimeUnit.SECONDS);
                         });
@@ -45,14 +40,14 @@ public class Member {
                     OfflinePlayer offlinePlayer = Necessity.server.getOfflinePlayer(messageContent);
 
                     if (offlinePlayer.isWhitelisted()) {
-                        message.delete().queue();
+                        event.getMessage().delete().queue();
                         textChannel.sendMessage("The specified user `" + messageContent + "` is already whitelisted.").queue((message) -> {
                             message.delete().queueAfter(3, TimeUnit.SECONDS);
                         });
                     } else {
                         offlinePlayer.setWhitelisted(true);
                         Necessity.server.reloadWhitelist();
-                        message.addReaction("✅").queue();
+                        event.getMessage().addReaction("✅").queue();
                     }
 
                     if (Config.get.linkAccounts) {
@@ -81,13 +76,11 @@ public class Member {
                         }
                     }
                 } else {
-                    message.delete().queue();
+                    event.getMessage().delete().queue();
                     textChannel.sendMessage("The specified user `" + messageContent + "` is not an actual player.").queue((message) -> {
                         message.delete().queueAfter(3, TimeUnit.SECONDS);
                     });
                 }
-            } else {
-                CheckCommand.execute();
             }
         }
     }
