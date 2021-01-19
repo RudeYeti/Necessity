@@ -1,36 +1,38 @@
 package io.github.rudeyeti.necessity.modules.schematics;
 
+import github.scarsz.discordsrv.dependencies.commons.io.FilenameUtils;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import github.scarsz.discordsrv.dependencies.jda.internal.JDAImpl;
+import github.scarsz.discordsrv.dependencies.okhttp3.OkHttpClient;
+import github.scarsz.discordsrv.dependencies.okhttp3.Request;
+import github.scarsz.discordsrv.dependencies.okhttp3.Response;
+import github.scarsz.discordsrv.util.DiscordUtil;
 import io.github.rudeyeti.necessity.Config;
 import io.github.rudeyeti.necessity.Necessity;
 import io.github.rudeyeti.necessity.Plugins;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class File {
-    protected static String message(int id, String fileName) {
-        switch (id) {
-            case 0:
-                return "Usage: The specified file `" + fileName + "`must be a schematic.";
-            case 1:
-                return "Usage: The schematic `" + fileName + "` already exists.";
-            case 2:
-                return "Usage: The schematic `" + fileName + "` exceeds the file size limit of `" + Config.get.sizeLimit + " KB`.";
-            case 3:
-                return "The schematic `" + fileName + "` has been successfully uploaded.";
-        }
-        return null;
-    }
+    protected static List<List<String>> message = new ArrayList<List<String>>() {{
+        add(Arrays.asList("Usage: The specified file `", "` must be a schematic."));
+        add(Arrays.asList("Usage: The schematic `", "` exceeds the file size limit of `", " KB`."));
+        add(Arrays.asList("The schematic `", "` has been successfully uploaded."));
+    }};
 
     protected static void errorMessage(GuildMessageReceivedEvent event, String errorMessage) {
         event.getChannel().sendMessage(errorMessage).complete().delete().completeAfter(3, TimeUnit.SECONDS);
@@ -38,43 +40,50 @@ public class File {
     }
 
     protected static String download(URL url, java.io.File destFolder) {
-        String fileName = new java.io.File(url.getPath()).getName();
-        java.io.File file = new java.io.File(destFolder, fileName);
+        try {
+            Request request = new Request.Builder().url(url).header("User-Agent", "Necessity").build();
+            Response response = new OkHttpClient().newBuilder().build().newCall(request).execute();
+            InputStream inputStream = response.body().byteStream();
 
-        if (fileName.endsWith(".schematic")) {
-            if (!file.exists()) {
-                try {
-                    URLConnection connection = url.openConnection();
-                    connection.setRequestProperty("User-Agent", "Necessity");
-                    connection.connect();
+            String fileName = response.headers().names().contains("content-disposition") ?
+                    response.headers().get("content-disposition").replaceFirst("(?i)^.*filename=\"?([^\"]+)\"?.*$", "$1") :
+                    new java.io.File(url.getPath()).getName();
 
-                    ReadableByteChannel readableByteChannel = Channels.newChannel(connection.getInputStream());
-                    FileOutputStream fileOutputStream = new FileOutputStream(file);
-                    int fileSize = IOUtils.toByteArray(connection.getInputStream()).length;
+            java.io.File file = new java.io.File(destFolder, fileName);
 
-                    if (fileSize > Integer.parseInt(Config.get.sizeLimit) * 1000) {
-                        readableByteChannel.close();
-                        fileOutputStream.close();
-                        file.delete();
+            if (fileName.endsWith(".schematic")) {
+                for (int i = 1; file.exists(); i++) {
+                    file = new java.io.File(destFolder, FilenameUtils.removeExtension(fileName) + i + ".schematic");
+                }
 
-                        return message(2, fileName);
-                    }
+                fileName = file.getName();
 
-                    fileOutputStream.getChannel().transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
+                ReadableByteChannel readableByteChannel = Channels.newChannel(inputStream);
+                FileOutputStream fileOutputStream = new FileOutputStream(file);
+                int fileSize = (int) response.body().contentLength();
+
+                if (fileSize > Integer.parseInt(Config.get.sizeLimit) * 1000) {
+                    inputStream.close();
                     readableByteChannel.close();
                     fileOutputStream.close();
+                    file.delete();
 
-                    return message(3, fileName);
-                } catch (IOException error) {
-                    error.printStackTrace();
+                    return message.get(1).get(0) + fileName + message.get(1).get(1) + Config.get.sizeLimit + message.get(1).get(2);
                 }
+
+                fileOutputStream.getChannel().transferFrom(readableByteChannel, 0, fileSize);
+                inputStream.close();
+                readableByteChannel.close();
+                fileOutputStream.close();
+
+                return message.get(2).get(0) + fileName + message.get(2).get(1);
             } else {
-                return message(1, fileName);
+                return message.get(0).get(0) + fileName + message.get(0).get(1);
             }
-        } else {
-            return message(0, fileName);
+        } catch (IOException error) {
+            error.printStackTrace();
+            return "Usage: An unknown error occurred when attempting to download the file.";
         }
-        return "Usage: An unknown error occurred when attempting to download the file `" + fileName + "`.";
     }
 
     protected static void get(GuildMessageReceivedEvent event) {
@@ -105,18 +114,20 @@ public class File {
                     if (fileName.endsWith(".schematic")) {
                         java.io.File file = new java.io.File(schematicsFolder, fileName);
 
-                        if (!file.exists()) {
-                            if (!(attachments.get(0).getSize() > Integer.parseInt(Config.get.sizeLimit) * 1000)) {
-                                attachments.get(0).downloadToFile(file);
-                                event.getChannel().sendMessage(message(3, fileName)).queue();
-                            } else {
-                                errorMessage(event, File.message(2, fileName));
-                            }
+                        for (int i = 1; file.exists(); i++) {
+                            file = new java.io.File(schematicsFolder, FilenameUtils.removeExtension(fileName) + i + ".schematic");
+                        }
+
+                        fileName = file.getName();
+
+                        if (!(attachments.get(0).getSize() > Integer.parseInt(Config.get.sizeLimit) * 1000)) {
+                            attachments.get(0).downloadToFile(file);
+                            event.getChannel().sendMessage(message.get(2).get(0) + fileName + message.get(2).get(1)).queue();
                         } else {
-                            errorMessage(event, File.message(1, fileName));
+                            errorMessage(event, message.get(1).get(0) + fileName + message.get(1).get(1) + Config.get.sizeLimit + message.get(1).get(2));
                         }
                     } else {
-                        errorMessage(event, File.message(0, fileName));
+                        errorMessage(event, message.get(0).get(0) + fileName + message.get(0).get(1));
                     }
                 } else {
                     errorMessage(event, "Usage: The message must either contain a link or have a schematic attached to it.");
