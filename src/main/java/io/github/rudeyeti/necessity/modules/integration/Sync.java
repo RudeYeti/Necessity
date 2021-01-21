@@ -2,16 +2,12 @@ package io.github.rudeyeti.necessity.modules.integration;
 
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
-import github.scarsz.discordsrv.dependencies.okhttp3.ResponseBody;
 import io.github.rudeyeti.necessity.Config;
 import io.github.rudeyeti.necessity.Necessity;
 import io.github.rudeyeti.necessity.Plugins;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Sync {
     private static void getMembersFirstPage() {

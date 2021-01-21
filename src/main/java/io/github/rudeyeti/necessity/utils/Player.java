@@ -1,20 +1,25 @@
 package io.github.rudeyeti.necessity.utils;
 
+import github.scarsz.discordsrv.dependencies.okhttp3.OkHttpClient;
+import github.scarsz.discordsrv.dependencies.okhttp3.Request;
+import github.scarsz.discordsrv.dependencies.okhttp3.Response;
+
 import java.io.IOException;
 import java.net.URL;
-import java.net.URLConnection;
+
 import java.util.UUID;
 
 public class Player {
     public static boolean exists(String username) {
         try {
             URL url = new URL("https://api.mojang.com/users/profiles/minecraft/" + username);
-            URLConnection connection = url.openConnection();
-            connection.getContent().toString().isEmpty();
-        } catch (IOException | NullPointerException error) {
+            Request request = new Request.Builder().url(url).header("User-Agent", "Necessity").build();
+            Response response = new OkHttpClient().newBuilder().build().newCall(request).execute();
+
+            return response.body().contentLength() > 0;
+        } catch (IOException error) {
             return false;
         }
-        return true;
     }
 
     public static boolean isUuid(String uuid) {

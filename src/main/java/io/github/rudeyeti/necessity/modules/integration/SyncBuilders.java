@@ -1,6 +1,5 @@
 package io.github.rudeyeti.necessity.modules.integration;
 
-import github.scarsz.discordsrv.dependencies.jackson.core.JsonProcessingException;
 import github.scarsz.discordsrv.dependencies.jackson.databind.JsonNode;
 import github.scarsz.discordsrv.dependencies.jackson.databind.ObjectMapper;
 import github.scarsz.discordsrv.dependencies.jackson.databind.node.ArrayNode;
@@ -10,7 +9,6 @@ import github.scarsz.discordsrv.dependencies.okhttp3.Request;
 import github.scarsz.discordsrv.dependencies.okhttp3.ResponseBody;
 import io.github.rudeyeti.necessity.Config;
 import io.github.rudeyeti.necessity.Necessity;
-
 
 import java.io.IOException;
 import java.util.ArrayList;

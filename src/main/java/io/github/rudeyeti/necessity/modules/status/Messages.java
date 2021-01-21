@@ -12,10 +12,10 @@ import java.nio.file.Path;
 
 public class Messages {
     protected static void initialize() {
-        Necessity.statusChannel = Necessity.guild.getTextChannelById(Config.get.statusChannelId);
+        Status.statusChannel = Necessity.guild.getTextChannelById(Config.get.statusChannelId);
 
         if (Config.get.messageId.isEmpty()) {
-            Necessity.statusChannel.sendMessage(serverOn().build()).queue((message) -> {
+            Status.statusChannel.sendMessage(serverOn().build()).queue((message) -> {
                 try {
                     Path config = new File(Necessity.plugin.getDataFolder(), "config.yml").toPath();
                     String content = new String(Files.readAllBytes(config));
@@ -29,13 +29,13 @@ public class Messages {
                 }
             });
         } else {
-            Necessity.statusChannel.editMessageById(Config.get.messageId, serverOn().build()).queue();
+            Status.statusChannel.editMessageById(Config.get.messageId, serverOn().build()).queue();
         }
     }
 
     protected static EmbedBuilder serverOn() {
         EmbedBuilder embedBuilder = new EmbedBuilder();
-        int onlinePlayers = Necessity.onlinePlayers.size();
+        int onlinePlayers = Status.onlinePlayers.size();
 
         embedBuilder.setTitle(Config.get.serverAddress, null);
         embedBuilder.setColor(new Color(0x759965));
@@ -55,7 +55,7 @@ public class Messages {
         if (onlinePlayers > 0) {
             final String[] playerList = {""};
 
-            Necessity.onlinePlayers.forEach((player) -> {
+            Status.onlinePlayers.forEach((player) -> {
                 playerList[0] += player + "\n";
             });
 

@@ -15,28 +15,30 @@ import io.github.rudeyeti.necessity.utils.Control;
 public class DiscordSRVListener {
     @Subscribe
     public void discordReadyEvent(DiscordReadyEvent event) {
-        DiscordUtil.getJda().addEventListener(new JDAListener());
-        Necessity.guild = DiscordSRV.getPlugin().getMainGuild();
+        try {
+            DiscordUtil.getJda().addEventListener(new JDAListener());
+            Necessity.guild = DiscordSRV.getPlugin().getMainGuild();
+            Necessity.builderRole = Necessity.guild.getRoleById(Config.get.discordRoleId);
 
-        if (Control.isEnabled && Necessity.guild == null) {
-            Necessity.logger.severe("Your Discord Bot must be in a Discord Server.");
-            Control.disable();
-            return;
+            if (Control.isEnabled) {
+                if (Necessity.builderRole == null) {
+                    Necessity.logger.severe(String.format(Config.getMessage, "discord-role-id", "a real role."));
+                    Control.disable(true);
+                    return;
+                } else if (!ArrayUtils.contains(Plugins.getVault().getGroups(), Config.get.minecraftRoleName)) {
+                    Necessity.logger.severe(String.format(Config.getMessage, "minecraft-role-name", "a real group."));
+                    Control.disable(true);
+                    return;
+                }
+            }
+
+            Status.initialize();
+            Integration.initialize();
+        } catch (NullPointerException error) {
+            if (Control.isEnabled && Necessity.guild == null) {
+                Necessity.logger.severe("The Discord Bot must be in a Discord Server.");
+                Control.disable(true);
+            }
         }
-
-        Necessity.builderRole = Necessity.guild.getRoleById(Config.get.discordRoleId);
-
-        if (Control.isEnabled && Necessity.builderRole == null) {
-            Necessity.logger.severe("The role with the ID " + Config.get.discordRoleId + " was not found in the Discord Server " + Necessity.guild.getName() + ".");
-            Control.disable();
-            return;
-        } else if (Control.isEnabled && !ArrayUtils.contains(Plugins.getVault().getGroups(), Config.get.minecraftRoleName)) {
-            Necessity.logger.severe("The minecraft-role-name value " + Config.get.minecraftRoleName + " in the configuration was not registered as a group.");
-            Control.disable();
-            return;
-        }
-
-        Status.initialize();
-        Integration.initialize();
     }
 }

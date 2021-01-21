@@ -4,25 +4,17 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Guild;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Role;
-import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.requests.GatewayIntent;
 import github.scarsz.discordsrv.dependencies.okhttp3.ResponseBody;
 import github.scarsz.discordsrv.util.DiscordUtil;
-import io.github.rudeyeti.necessity.commands.minecraft.NecessityCommand;
-import io.github.rudeyeti.necessity.commands.minecraft.ServerActivityCommand;
 import io.github.rudeyeti.necessity.listeners.DiscordSRVListener;
-import io.github.rudeyeti.necessity.listeners.EventListener;
 import io.github.rudeyeti.necessity.listeners.JDAListener;
-import io.github.rudeyeti.necessity.modules.ModuleManager;
 import io.github.rudeyeti.necessity.modules.status.Status;
 import io.github.rudeyeti.necessity.utils.Control;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Server;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -37,8 +29,6 @@ public final class Necessity extends JavaPlugin {
     public static List<Member> initialBuildTeamMembersList;
     public static Member lastRoleChange;
     public static int lastPage;
-    public static TextChannel statusChannel;
-    public static List<String> onlinePlayers = new ArrayList<>();
 
     @Override
     public void onEnable() {
@@ -61,7 +51,7 @@ public final class Necessity extends JavaPlugin {
     public void onDisable() {
         try {
             if (Config.get.status) {
-                statusChannel.editMessageById(Config.get.messageId, Status.serverOff().build()).complete();
+                Status.statusChannel.editMessageById(Config.get.messageId, Status.serverOff().build()).complete();
             }
 
             DiscordUtil.getJda().removeEventListener(new JDAListener());

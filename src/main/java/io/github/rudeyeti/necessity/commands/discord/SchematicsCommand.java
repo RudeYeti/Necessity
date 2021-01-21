@@ -6,7 +6,6 @@ import io.github.rudeyeti.necessity.Config;
 import io.github.rudeyeti.necessity.Plugins;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.List;
 
 public class SchematicsCommand {

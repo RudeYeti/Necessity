@@ -6,12 +6,9 @@ import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.GuildM
 import github.scarsz.discordsrv.dependencies.jda.api.hooks.ListenerAdapter;
 import io.github.rudeyeti.necessity.Config;
 import io.github.rudeyeti.necessity.Necessity;
-import io.github.rudeyeti.necessity.commands.discord.CheckCommand;
 import io.github.rudeyeti.necessity.commands.discord.CommandManager;
 import io.github.rudeyeti.necessity.modules.integration.Integration;
-import io.github.rudeyeti.necessity.modules.schematics.File;
 import io.github.rudeyeti.necessity.modules.schematics.Schematics;
-import io.github.rudeyeti.necessity.modules.whitelist.Member;
 import io.github.rudeyeti.necessity.modules.whitelist.Whitelist;
 import org.jetbrains.annotations.NotNull;
 

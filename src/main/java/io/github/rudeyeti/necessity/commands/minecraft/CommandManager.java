@@ -1,9 +1,11 @@
 package io.github.rudeyeti.necessity.commands.minecraft;
 
-import io.github.rudeyeti.necessity.Config;
 import org.bukkit.util.StringUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CommandManager {

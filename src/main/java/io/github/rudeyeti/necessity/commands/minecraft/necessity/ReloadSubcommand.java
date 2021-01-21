@@ -1,16 +1,17 @@
 package io.github.rudeyeti.necessity.commands.minecraft.necessity;
 
-import io.github.rudeyeti.necessity.Necessity;
 import io.github.rudeyeti.necessity.Config;
+import io.github.rudeyeti.necessity.Necessity;
 import io.github.rudeyeti.necessity.utils.Control;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ReloadSubcommand {
     private static Object addQuotes(Object object) {
@@ -31,15 +32,16 @@ public class ReloadSubcommand {
                 Config.config = Necessity.plugin.getConfig();
 
                 if (!Config.validateConfig(false)) {
-                    final String[] content = {new String(Files.readAllBytes(config))};
-                    Map<String, Object> newConfig = Config.getValues(false);
+                    InputStream initialConfig = Necessity.plugin.getResource("config.yml");
+                    Stream<String> lines = new BufferedReader(new InputStreamReader(initialConfig)).lines();
+                    final String[] content = {lines.collect(Collectors.joining("\n"))};
 
-                    newConfig.forEach((option, newValue) -> {
+                    oldConfig.forEach((option, oldValue) -> {
                         String key = option + ": ";
-                        newValue = addQuotes(newValue);
-                        Object oldValue = addQuotes(oldConfig.get(option));
+                        Object newValue = addQuotes(Config.config.getDefaults().get(option));
+                        oldValue = addQuotes(oldValue);
 
-                        content[0] = content[0].replaceAll(key + newValue, key + oldValue);
+                        content[0] = content[0].replace(key + newValue, key + oldValue);
                     });
 
                     Files.write(config, content[0].getBytes());

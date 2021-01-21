@@ -1,7 +1,7 @@
 package io.github.rudeyeti.necessity.modules.activity;
 
-import io.github.rudeyeti.necessity.Plugins;
 import io.github.rudeyeti.necessity.Necessity;
+import io.github.rudeyeti.necessity.Plugins;
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;

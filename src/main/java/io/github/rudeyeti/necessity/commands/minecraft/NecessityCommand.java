@@ -1,7 +1,5 @@
 package io.github.rudeyeti.necessity.commands.minecraft;
 
-import io.github.rudeyeti.necessity.Config;
-import io.github.rudeyeti.necessity.Necessity;
 import io.github.rudeyeti.necessity.commands.minecraft.necessity.InfoSubcommand;
 import io.github.rudeyeti.necessity.commands.minecraft.necessity.ReloadSubcommand;
 import io.github.rudeyeti.necessity.commands.minecraft.necessity.StatsSubcommand;
@@ -11,10 +9,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
-import org.bukkit.util.StringUtil;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class NecessityCommand implements CommandExecutor, TabExecutor {
 
