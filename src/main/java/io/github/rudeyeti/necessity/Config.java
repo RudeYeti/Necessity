@@ -2,7 +2,11 @@ package io.github.rudeyeti.necessity;
 
 import org.bukkit.configuration.Configuration;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -63,6 +67,14 @@ public class Config {
         return field.getName().replaceAll("([A-Z])", "-$1").toLowerCase();
     }
 
+    private static Object addQuotes(Object object) {
+        if (object instanceof String && !((String) object).contains("\"")) {
+            return "\"" + object + "\"";
+        } else {
+            return object;
+        }
+    }
+
     private static Map<Field, List<Object>> forEachVariable() {
         Map<Field, List<Object>> hashMap = new LinkedHashMap<>();
 
@@ -91,6 +103,33 @@ public class Config {
         });
 
         return hashMap;
+    }
+
+    public static String setValue(String option, Object newValue, Object oldValue) {
+        try {
+            Path config = new File(Necessity.plugin.getDataFolder(), "config.yml").toPath();
+            String content = new String(Files.readAllBytes(config));
+
+            return setValue(config, content, option, newValue, oldValue);
+        } catch (IOException error) {
+            error.printStackTrace();
+            return null;
+        }
+    }
+
+    public static String setValue(Path config, String content, String option, Object newValue, Object oldValue) {
+        try {
+            String key = option + ": ";
+            content = content.replace(key + addQuotes(newValue), key + addQuotes(oldValue));
+
+            Files.write(config, content.getBytes());
+            Necessity.plugin.reloadConfig();
+
+            return content;
+        } catch (IOException error) {
+            error.printStackTrace();
+            return null;
+        }
     }
 
     public static void updateConfig() {

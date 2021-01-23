@@ -52,6 +52,8 @@ public final class Necessity extends JavaPlugin {
         try {
             if (Config.get.status) {
                 Status.statusChannel.editMessageById(Config.get.messageId, Status.serverOff().build()).complete();
+            } else {
+                Status.delete();
             }
 
             DiscordUtil.getJda().removeEventListener(new JDAListener());

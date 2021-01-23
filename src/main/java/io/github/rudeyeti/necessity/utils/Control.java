@@ -1,7 +1,6 @@
 package io.github.rudeyeti.necessity.utils;
 
 import github.scarsz.discordsrv.DiscordSRV;
-import github.scarsz.discordsrv.api.events.DiscordReadyEvent;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import io.github.rudeyeti.necessity.Config;
 import io.github.rudeyeti.necessity.Necessity;
@@ -10,7 +9,6 @@ import io.github.rudeyeti.necessity.commands.minecraft.ServerActivityCommand;
 import io.github.rudeyeti.necessity.listeners.DiscordSRVListener;
 import io.github.rudeyeti.necessity.listeners.EventListener;
 import io.github.rudeyeti.necessity.listeners.JDAListener;
-import io.github.rudeyeti.necessity.modules.ModuleManager;
 import io.github.rudeyeti.necessity.modules.status.Status;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.CommandMap;
@@ -20,7 +18,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import java.lang.reflect.Field;
 
 public class Control {
+
     public static boolean isEnabled = true;
+    public static JDAListener jdaListener = new JDAListener();
 
     public static void enable() {
         try {
@@ -32,8 +32,6 @@ public class Control {
                 disable(true);
                 return;
             }
-
-            ModuleManager.initialize();
 
             if (Config.get.whitelist && !Necessity.server.hasWhitelist()) {
                 Necessity.server.setWhitelist(true);
@@ -53,7 +51,7 @@ public class Control {
             DiscordSRV.api.subscribe(new DiscordSRVListener());
 
             if (DiscordSRV.isReady) {
-                DiscordSRV.api.callEvent(new DiscordReadyEvent());
+                Discord.discordReadyEvent();
             }
         } catch (NullPointerException ignored) {}
     }
@@ -68,6 +66,11 @@ public class Control {
             }
 
             Config.updateConfig();
+
+            if (!Config.get.status) {
+                Status.delete();
+            }
+
             Necessity.server.getPluginCommand("necessity").setExecutor(new NecessityCommand());
 
             Field commandMapField = Necessity.server.getClass().getDeclaredField("commandMap");
@@ -80,7 +83,7 @@ public class Control {
             PlayerJoinEvent.getHandlerList().unregister(Necessity.plugin);
             PlayerQuitEvent.getHandlerList().unregister(Necessity.plugin);
 
-            DiscordUtil.getJda().removeEventListener(new JDAListener());
+            DiscordUtil.getJda().removeEventListener(jdaListener);
             DiscordSRV.api.unsubscribe(new DiscordSRVListener());
         } catch (NullPointerException ignored) {
         } catch (NoSuchFieldException | IllegalAccessException error) {

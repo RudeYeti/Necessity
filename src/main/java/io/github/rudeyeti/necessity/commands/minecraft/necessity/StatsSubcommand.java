@@ -23,8 +23,8 @@ public class StatsSubcommand {
                                "Discord Builders - " + Necessity.guild.getMembersWithRoles(Necessity.builderRole).size() + "\n" +
                                "Minecraft Players - " + Necessity.plugin.getServer().getOnlinePlayers().size() + "\n" +
                                "Minecraft Builders - " + playersWithGroup);
-            return;
+        } else {
+            sender.sendMessage(ChatColor.RED + "You are missing the correct permission to perform this command.");
         }
-        sender.sendMessage(ChatColor.RED + "You are missing the correct permission to perform this command.");
     }
 }

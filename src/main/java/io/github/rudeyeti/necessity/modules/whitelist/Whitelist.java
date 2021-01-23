@@ -5,16 +5,19 @@ import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.GuildM
 import io.github.rudeyeti.necessity.modules.ModuleManager;
 
 public class Whitelist {
-    public static boolean isEnabled = ModuleManager.isEnabled("Whitelist").containsKey(true);
+
+    public static boolean isEnabled() {
+        return ModuleManager.isEnabled("Whitelist").containsKey(true);
+    }
 
     public static void add(GuildMessageReceivedEvent event) {
-        if (isEnabled) {
+        if (isEnabled()) {
             Member.add(event);
         }
     }
 
     public static void remove(GuildMemberRemoveEvent event) {
-        if (isEnabled) {
+        if (isEnabled()) {
             Member.remove(event);
         }
     }

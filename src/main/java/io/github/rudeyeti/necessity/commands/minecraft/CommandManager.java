@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CommandManager {
-    private static String removeLast(String string, String regex) {
+    public static String removeLast(String string, String regex) {
         String reverse = new StringBuilder(string).reverse().toString().replaceFirst(regex, "");
         return new StringBuilder(reverse).reverse().toString();
     }

@@ -82,7 +82,7 @@ public class File {
     }
 
     protected static void get(GuildMessageReceivedEvent event) {
-        if (event.getGuild() == Necessity.guild && event.getChannel().getId().equals(Config.get.schematicsChannelId) && !event.getAuthor().isBot()) {
+        if (event.getGuild() == Necessity.guild && event.getChannel().getId().equals(Config.get.schematicsChannelId)) {
             java.io.File schematicsFolder = new java.io.File(Plugins.getWorldEdit().getDataFolder() + java.io.File.separator + "schematics");
 
             try {

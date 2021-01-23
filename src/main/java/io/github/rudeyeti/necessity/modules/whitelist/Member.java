@@ -21,7 +21,7 @@ public class Member {
     protected static AccountLinkManager accountLinkManager = DiscordSRV.getPlugin().getAccountLinkManager();
 
     protected static void add(GuildMessageReceivedEvent event) {
-        if (event.getGuild() == Necessity.guild && !event.getAuthor().isBot()) {
+        if (event.getGuild() == Necessity.guild) {
             TextChannel textChannel = event.getMessage().getTextChannel();
             String messageContent = event.getMessage().getContentRaw();
 
