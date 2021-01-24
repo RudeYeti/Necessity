@@ -11,6 +11,8 @@ import org.bukkit.command.CommandSender;
 public class ModulesSubcommand {
     public static void execute(CommandSender sender, String label, String[] args) {
         if (sender.hasPermission("necessity.modules") || sender.isOp()) {
+            String usage = String.format("Usage: /%s %s %s", label, args[0], "<list | toggle> [module]");
+
             if (args.length > 1) {
                 switch (args[1].toLowerCase()) {
                     case "list":
@@ -36,17 +38,17 @@ public class ModulesSubcommand {
                                 sender.sendMessage(ChatColor.RED + "Usage: The module " + args[2] + " has not been found.");
                             }
                         } else {
-                            sender.sendMessage(ChatColor.RED + "Usage: /" + label + " " + args[0] + " " + args[1] + " <module>");
+                            sender.sendMessage(ChatColor.RED + String.format("Usage: /%s %s %s %s", label, args[0], args[1], "<module>"));
                         }
                         break;
                     default:
-                        sender.sendMessage(ChatColor.RED + "Usage: /" + label + " " + args[0] + " <list | toggle> [module]");
+                        sender.sendMessage(ChatColor.RED + usage);
                 }
             } else {
-                sender.sendMessage(ChatColor.RED + "Usage: /" + label + " " + args[0] + " <list | toggle> [module]");
+                sender.sendMessage(ChatColor.RED + usage);
             }
         } else {
-            sender.sendMessage(ChatColor.RED + "You are missing the correct permission to perform this command.");
+            sender.sendMessage(ChatColor.RED + CommandManager.permission);
         }
     }
 }

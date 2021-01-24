@@ -14,7 +14,8 @@ public class NecessityCommand implements CommandExecutor, TabExecutor {
 
     public static Map<String, List<String>> subcommands = new LinkedHashMap<String, List<String>>() {{
         put("info", Arrays.asList("Shows details about the author and the version of this plugin.", "i(nfo)?(rmation)?|authors?|ver(sion)?"));
-        put("maintenance", Arrays.asList("Describes the current status of Maintenance Mode and toggles it.", "maintenance"));
+        put("maintenance", Arrays.asList("Describes and toggles the state of Maintenance Mode.", "maintenance"));
+        put("migrate", Arrays.asList("Migrates all linked users from DiscordSRV to the whitelist.", "migrate|whitelist"));
         put("modules", Arrays.asList("Lists the various modules and enables or disables them.", "m(odules?)?"));
         put("reload", Arrays.asList("Updates any values that were modified in the configuration.", "r(e?(load|start|boot))?|(en|dis)able"));
         put("stats", Arrays.asList("Lists different information regarding the members.", "s(tat)?(istic)?s?"));
@@ -26,6 +27,7 @@ public class NecessityCommand implements CommandExecutor, TabExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         executor.put("info", () -> InfoSubcommand.execute(sender));
         executor.put("maintenance", () -> MaintenanceSubcommand.execute(sender, label, args));
+        executor.put("migrate", () -> MigrateSubcommand.execute(sender, label, args));
         executor.put("modules", () -> ModulesSubcommand.execute(sender, label, args));
         executor.put("reload", () -> ReloadSubcommand.execute(sender));
         executor.put("stats", () -> StatsSubcommand.execute(sender));

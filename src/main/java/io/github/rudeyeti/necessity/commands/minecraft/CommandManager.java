@@ -9,6 +9,9 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CommandManager {
+
+    public static String permission = "You are missing the correct permission to perform this command.";
+
     public static String removeLast(String string, String regex) {
         String reverse = new StringBuilder(string).reverse().toString().replaceFirst(regex, "");
         return new StringBuilder(reverse).reverse().toString();

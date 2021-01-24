@@ -1,9 +1,11 @@
 package io.github.rudeyeti.necessity.modules.activity;
 
+import github.scarsz.discordsrv.DiscordSRV;
 import io.github.rudeyeti.necessity.Necessity;
 import io.github.rudeyeti.necessity.Plugins;
 import org.apache.commons.lang.math.NumberUtils;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 
 import java.io.File;
@@ -19,9 +21,11 @@ public class Generate {
         if (Plugins.getCoreProtect() != null) {
             List<String> lines = new ArrayList<>();
 
-            Necessity.server.getWhitelistedPlayers().forEach((offlinePlayer) -> {
+            DiscordSRV.getPlugin().getAccountLinkManager().getLinkedAccounts().forEach((name, uuid) -> {
+                OfflinePlayer offlinePlayer = Necessity.server.getOfflinePlayer(uuid);
                 int activity = Plugins.getCoreProtect().performLookup(
-                        Integer.parseInt(time), Collections.singletonList(offlinePlayer.getName()), null, null, null, null, 0, null
+                        Integer.parseInt(time), Collections.singletonList(offlinePlayer.getName()),
+                        null, null, null, null, 0, null
                 ).size();
 
                 // Formula to count the pages of CoreProtect entries, which is basically the total divided by four.

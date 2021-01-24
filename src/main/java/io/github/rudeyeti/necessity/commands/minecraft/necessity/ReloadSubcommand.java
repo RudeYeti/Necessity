@@ -2,6 +2,7 @@ package io.github.rudeyeti.necessity.commands.minecraft.necessity;
 
 import io.github.rudeyeti.necessity.Config;
 import io.github.rudeyeti.necessity.Necessity;
+import io.github.rudeyeti.necessity.commands.minecraft.CommandManager;
 import io.github.rudeyeti.necessity.utils.Control;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -48,7 +49,7 @@ public class ReloadSubcommand {
                 }
             }
         } else {
-            sender.sendMessage(ChatColor.RED + "Usage: You are missing the correct permission to perform this command.");
+            sender.sendMessage(ChatColor.RED + CommandManager.permission);
         }
     }
 }

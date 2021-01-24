@@ -3,6 +3,7 @@ package io.github.rudeyeti.necessity.commands.minecraft.necessity;
 import io.github.rudeyeti.necessity.Config;
 import io.github.rudeyeti.necessity.Necessity;
 import io.github.rudeyeti.necessity.Plugins;
+import io.github.rudeyeti.necessity.commands.minecraft.CommandManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -24,7 +25,7 @@ public class StatsSubcommand {
                                "Minecraft Players - " + Necessity.plugin.getServer().getOnlinePlayers().size() + "\n" +
                                "Minecraft Builders - " + playersWithGroup);
         } else {
-            sender.sendMessage(ChatColor.RED + "You are missing the correct permission to perform this command.");
+            sender.sendMessage(ChatColor.RED + CommandManager.permission);
         }
     }
 }

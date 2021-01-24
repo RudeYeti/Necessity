@@ -67,6 +67,10 @@ public class Control {
 
             Config.updateConfig();
 
+            if (!Config.get.whitelist && Necessity.server.hasWhitelist()) {
+                Necessity.server.setWhitelist(false);
+            }
+
             if (!Config.get.status) {
                 Status.delete();
             }
