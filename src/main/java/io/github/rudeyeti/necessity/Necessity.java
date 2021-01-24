@@ -42,8 +42,6 @@ public final class Necessity extends JavaPlugin {
         Config.config = plugin.getConfig();
         plugin.saveDefaultConfig();
 
-        DiscordSRV.api.requireIntent(GatewayIntent.GUILD_MESSAGES);
-        DiscordSRV.api.requireIntent(GatewayIntent.GUILD_MEMBERS);
         Control.enable();
     }
 
@@ -52,12 +50,9 @@ public final class Necessity extends JavaPlugin {
         try {
             if (Config.get.status) {
                 Status.statusChannel.editMessageById(Config.get.messageId, Status.serverOff().build()).complete();
-            } else {
-                Status.delete();
             }
 
-            DiscordUtil.getJda().removeEventListener(new JDAListener());
-            DiscordSRV.api.unsubscribe(new DiscordSRVListener());
+            Control.disable(false);
         } catch (NullPointerException ignored) {}
     }
 }

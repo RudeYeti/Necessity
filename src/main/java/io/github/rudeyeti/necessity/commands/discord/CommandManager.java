@@ -27,7 +27,7 @@ public class CommandManager {
         commands.put("check", () -> CheckCommand.execute(args));
         arguments.put("check", "<id | uuid | user | username>");
         commands.put("schematics", () -> SchematicsCommand.execute(args));
-        arguments.put("schematics", "<list | download> [file]");
+        arguments.put("schematics", "<list | download | rename> [file] [name]");
 
         if (messageContent.startsWith(Config.get.prefix)) {
             List<String> channelIds = Arrays.asList(Config.get.statusChannelId, Config.get.schematicsChannelId, Config.get.whitelistChannelId);

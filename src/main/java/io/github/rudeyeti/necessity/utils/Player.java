@@ -16,7 +16,13 @@ public class Player {
             Request request = new Request.Builder().url(url).header("User-Agent", "Necessity").build();
             Response response = new OkHttpClient().newBuilder().build().newCall(request).execute();
 
-            return response.body().contentLength() > 0;
+            if (response.isSuccessful() && response.body().contentLength() > 0) {
+                response.close();
+                return true;
+            } else {
+                response.close();
+                return false;
+            }
         } catch (IOException error) {
             return false;
         }

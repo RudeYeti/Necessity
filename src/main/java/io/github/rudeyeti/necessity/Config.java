@@ -43,7 +43,9 @@ public class Config {
         // Status Configuration
         public static String statusChannelId;
         public static String serverAddress;
+        // Plugin Constants
         public static String messageId;
+        public static boolean maintenance;
     }
 
     public static List<Field> variables = Arrays.asList(get.class.getDeclaredFields());

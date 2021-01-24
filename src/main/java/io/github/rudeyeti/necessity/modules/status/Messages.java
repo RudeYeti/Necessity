@@ -47,9 +47,11 @@ public class Messages {
 
             // Discord has an embed field character limit of 1024.
             if (playerList[0].length() > 1024) {
-                playerList[0].substring(0, 1017);
-                playerList[0].substring(0, playerList[0].lastIndexOf("\n"));
-                playerList[0].append("More...");
+                int length = playerList[0].length();
+
+                playerList[0].delete(1017, length);
+                playerList[0].delete(playerList[0].lastIndexOf("\n"), length);
+                playerList[0].append("\nMore...");
             }
 
             embedBuilder.addField(

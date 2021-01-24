@@ -100,5 +100,9 @@ status-channel-id: "##################"
 # Default value: "example.com:25565"
 server-address: "example.com:25565"
 
+
+# Plugin Constants
+
 # DO NOT MODIFY
 message-id: ""
+maintenance: false
