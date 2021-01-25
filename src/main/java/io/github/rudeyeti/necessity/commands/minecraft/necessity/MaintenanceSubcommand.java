@@ -1,11 +1,9 @@
 package io.github.rudeyeti.necessity.commands.minecraft.necessity;
 
-import github.scarsz.discordsrv.DiscordSRV;
 import io.github.rudeyeti.necessity.Config;
 import io.github.rudeyeti.necessity.commands.minecraft.CommandManager;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 
 public class MaintenanceSubcommand {
     public static void execute(CommandSender sender, String label, String[] args) {

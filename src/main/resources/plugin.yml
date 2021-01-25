@@ -6,10 +6,27 @@ softdepend: [CoreProtect, Vault, WorldEdit]
 author: Rude Yeti, Incorporated
 load: POSTWORLD
 description: ${project.description}
+permissions:
+  necessity.maintenance:
+    default: false
+  necessity.maintenance.bypass:
+      default: false
+  necessity.migrate:
+    default: false
+  necessity.modules:
+    default: false
+  necessity.reload:
+    default: false
+  necessity.stats:
+    default: false
+  necessity.generate:
+    default: false
+  necessity.leaderboard:
+    default: false
+  necessity.rank:
+    default: false
 commands:
   necessity:
-    description: necessity
     aliases: [ns]
   serveractivity:
-    description: serveractivity
     aliases: [sa, activity]

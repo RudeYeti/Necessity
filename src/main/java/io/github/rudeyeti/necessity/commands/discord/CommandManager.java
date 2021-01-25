@@ -23,11 +23,13 @@ public class CommandManager {
         message = event.getMessage();
         messageContent = message.getContentRaw();
         textChannel = message.getTextChannel();
+        String upload = Config.get.commandMode ? " | upload" : "";
+        String url = Config.get.commandMode ? " | url" : "";
 
         commands.put("check", () -> CheckCommand.execute(args));
         arguments.put("check", "<id | uuid | user | username>");
         commands.put("schematics", () -> SchematicsCommand.execute(args));
-        arguments.put("schematics", "<list | download | rename> [file] [name]");
+        arguments.put("schematics", "<list" + upload + " | download | rename> [file" + url + "] [name]");
 
         if (messageContent.startsWith(Config.get.prefix)) {
             List<String> channelIds = Arrays.asList(Config.get.statusChannelId, Config.get.schematicsChannelId, Config.get.whitelistChannelId);

@@ -25,14 +25,16 @@ public class MigrateSubcommand {
                         Map<String, UUID> linkedAccounts = DiscordSRV.getPlugin().getAccountLinkManager().getLinkedAccounts();
                         String player = linkedAccounts.size() > 1 ? "players" : "player";
 
-                        linkedAccounts.forEach((name, uuid) -> {
+                        linkedAccounts.forEach((id, uuid) -> {
                             OfflinePlayer offlinePlayer = Necessity.server.getOfflinePlayer(uuid);
+                            offlinePlayer = Necessity.server.getOfflinePlayer(offlinePlayer.getName());
 
                             if (offlinePlayer.isWhitelisted() == !isAdd) {
                                 offlinePlayer.setWhitelisted(isAdd);
                             }
                         });
 
+                        Necessity.server.reloadWhitelist();
                         sender.sendMessage(String.format("%s %d %s %s the whitelist.", action, linkedAccounts.size(), player, from));
                         break;
                     default:

@@ -80,6 +80,10 @@ blacklist:
 
 # Schematics Configuration
 
+# Whether to replace the schematics channel with a Discord Command.
+# Default value: false
+command-mode: false
+
 # The ID of the Discord Channel which will have schematics posted in it.
 # Default value: "##################"
 schematics-channel-id: "##################"

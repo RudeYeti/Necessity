@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class RankSubcommand {
     public static void execute(CommandSender sender) {
-        if (sender.hasPermission("necessity.leaderboard") || sender.isOp()) {
+        if (sender.hasPermission("necessity.rank") || sender.isOp()) {
             if (!(sender instanceof ConsoleCommandSender)) {
                 Necessity.server.getScheduler().runTaskAsynchronously(
                     Necessity.plugin,

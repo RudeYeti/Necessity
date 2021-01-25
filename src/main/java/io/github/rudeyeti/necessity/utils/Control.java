@@ -39,6 +39,7 @@ public class Control {
 
             if (Config.get.status) {
                 // Should almost always be none, unless the plugin has somehow been reloaded.
+                Necessity.server.getOnlinePlayers().clear();
                 Necessity.server.getOnlinePlayers().forEach((player) -> {
                     Status.onlinePlayers.add(player.getName());
                 });

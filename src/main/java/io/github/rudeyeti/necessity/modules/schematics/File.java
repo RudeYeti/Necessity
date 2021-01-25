@@ -1,7 +1,9 @@
 package io.github.rudeyeti.necessity.modules.schematics;
 
 import github.scarsz.discordsrv.dependencies.commons.io.FilenameUtils;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.Guild;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.dependencies.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import github.scarsz.discordsrv.dependencies.okhttp3.OkHttpClient;
 import github.scarsz.discordsrv.dependencies.okhttp3.Request;
@@ -18,20 +20,23 @@ import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class File {
-    protected static List<List<String>> message = new ArrayList<List<String>>() {{
-        add(Arrays.asList("Usage: The specified file `", "` must be a schematic."));
-        add(Arrays.asList("Usage: The schematic `", "` exceeds the file size limit of `", " KB`."));
-        add(Arrays.asList("The schematic `", "` has been successfully uploaded."));
+    private static final List<String> getMessage = new ArrayList<String>() {{
+        add("Usage: The specified file `%s` must be a schematic.");
+        add("Usage: The schematic `%s` exceeds the file size limit of `%s KB`.");
+        add("The schematic `%s` has been successfully uploaded.");
     }};
 
-    protected static void errorMessage(GuildMessageReceivedEvent event, String errorMessage) {
-        event.getChannel().sendMessage(errorMessage).complete().delete().completeAfter(3, TimeUnit.SECONDS);
-        event.getMessage().delete().queue();
+    private static void getErrorMessage(boolean isCommand, TextChannel channel, Message message, String errorMessage) {
+        if (isCommand) {
+            channel.sendMessage(errorMessage).queue();
+        } else {
+            channel.sendMessage(errorMessage).complete().delete().completeAfter(3, TimeUnit.SECONDS);
+            message.delete().queue();
+        }
     }
 
     protected static String download(URL url, java.io.File destFolder) {
@@ -63,7 +68,7 @@ public class File {
                     fileOutputStream.close();
                     file.delete();
 
-                    return message.get(1).get(0) + fileName + message.get(1).get(1) + Config.get.sizeLimit + message.get(1).get(2);
+                    return String.format(getMessage.get(1), fileName, Config.get.sizeLimit);
                 }
 
                 fileOutputStream.getChannel().transferFrom(readableByteChannel, 0, fileSize);
@@ -71,9 +76,9 @@ public class File {
                 readableByteChannel.close();
                 fileOutputStream.close();
 
-                return message.get(2).get(0) + fileName + message.get(2).get(1);
+                return String.format(getMessage.get(2), fileName);
             } else {
-                return message.get(0).get(0) + fileName + message.get(0).get(1);
+                return String.format(getMessage.get(0), fileName);
             }
         } catch (IOException error) {
             error.printStackTrace();
@@ -82,7 +87,13 @@ public class File {
     }
 
     protected static void get(GuildMessageReceivedEvent event) {
-        if (event.getGuild() == Necessity.guild && event.getChannel().getId().equals(Config.get.schematicsChannelId)) {
+        if (!Config.get.commandMode && event.getChannel().getId().equals(Config.get.schematicsChannelId)) {
+            get(false, event.getGuild(), event.getChannel(), event.getMessage(), event.getMessage().getContentRaw());
+        }
+    }
+
+    protected static void get(boolean isCommand, Guild guild, TextChannel channel, Message message, String urlString) {
+        if (guild == Necessity.guild) {
             java.io.File schematicsFolder = new java.io.File(Plugins.getWorldEdit().getDataFolder() + java.io.File.separator + "schematics");
 
             try {
@@ -91,16 +102,16 @@ public class File {
                 }
 
                 // If the message is not a url, an exception will be thrown.
-                URL url = new URL(event.getMessage().getContentRaw());
+                URL url = new URL(urlString);
                 String downloadFile = download(url, schematicsFolder);
 
-                if (!downloadFile.startsWith("Usage:")) {
-                    event.getChannel().sendMessage(downloadFile).queue();
+                if (downloadFile.startsWith("Usage:")) {
+                    getErrorMessage(isCommand, channel, message, downloadFile);
                 } else {
-                    errorMessage(event, downloadFile);
+                    channel.sendMessage(downloadFile).queue();
                 }
             } catch (MalformedURLException error) {
-                List<Message.Attachment> attachments = event.getMessage().getAttachments();
+                List<Message.Attachment> attachments = message.getAttachments();
 
                 // Otherwise download an attachment if it exists.
                 if (attachments.size() == 1) {
@@ -117,15 +128,15 @@ public class File {
 
                         if (!(attachments.get(0).getSize() > Integer.parseInt(Config.get.sizeLimit) * 1000)) {
                             attachments.get(0).downloadToFile(file);
-                            event.getChannel().sendMessage(message.get(2).get(0) + fileName + message.get(2).get(1)).queue();
+                            channel.sendMessage(String.format(getMessage.get(2), fileName)).queue();
                         } else {
-                            errorMessage(event, message.get(1).get(0) + fileName + message.get(1).get(1) + Config.get.sizeLimit + message.get(1).get(2));
+                            getErrorMessage(isCommand, channel, message, String.format(getMessage.get(1), fileName, Config.get.sizeLimit));
                         }
                     } else {
-                        errorMessage(event, message.get(0).get(0) + fileName + message.get(0).get(1));
+                        getErrorMessage(isCommand, channel, message, String.format(getMessage.get(0), fileName));
                     }
                 } else {
-                    errorMessage(event, "Usage: The message must either contain a link or have a schematic attached to it.");
+                    getErrorMessage(isCommand, channel, message, "Usage: The message must either contain a link or have a schematic attached to it.");
                 }
             }
         }

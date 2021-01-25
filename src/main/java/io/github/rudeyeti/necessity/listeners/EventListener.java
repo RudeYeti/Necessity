@@ -14,13 +14,13 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class EventListener implements Listener {
-    public static void silentJoin(boolean action, Player player) {
+    public static void silentJoin(Player player) {
         String silentJoin = "discordsrv.silentjoin";
         String silentQuit = "discordsrv.silentquit";
         boolean hasSilentJoin = Plugins.getVault().playerHas(player, silentJoin);
         boolean hasSilentQuit = Plugins.getVault().playerHas(player, silentQuit);
 
-        if (action) {
+        if (Config.get.maintenance) {
             if (!hasSilentJoin) {
                 Plugins.getVault().playerAdd(player, silentJoin);
             }
@@ -48,7 +48,7 @@ public class EventListener implements Listener {
                 event.disallow(PlayerLoginEvent.Result.KICK_OTHER,
                         ChatColor.RED + "The server is currently under maintenance. Please come back later.");
             } else {
-                silentJoin(true, event.getPlayer());
+                silentJoin(event.getPlayer());
             }
         }
     }
@@ -66,11 +66,7 @@ public class EventListener implements Listener {
     @EventHandler
     public void playerQuitEvent(PlayerQuitEvent event) {
         try {
-            if (Config.get.maintenance) {
-                silentJoin(true, event.getPlayer());
-            } else {
-                silentJoin(false, event.getPlayer());
-            }
+            silentJoin(event.getPlayer());
 
             Status.onlinePlayers.remove(event.getPlayer().getName());
             Status.statusChannel.editMessageById(Config.get.messageId, Status.serverOn().build()).queue();

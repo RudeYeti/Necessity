@@ -4,6 +4,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.EmbedBuilder;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import io.github.rudeyeti.necessity.Config;
 import io.github.rudeyeti.necessity.Plugins;
+import io.github.rudeyeti.necessity.modules.schematics.Schematics;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -102,6 +103,12 @@ public class SchematicsCommand {
                 }
                 break;
             default:
+                if (Config.get.commandMode && args.get(0).equalsIgnoreCase("upload")) {
+                    String urlString = args.size() > 1 ? args.get(1) : "";
+                    Schematics.get(true, CommandManager.textChannel.getGuild(), CommandManager.textChannel, CommandManager.message, urlString);
+                    return;
+                }
+
                 CommandManager.textChannel.sendMessage("Usage: `" + Config.get.prefix + "schematics " + CommandManager.arguments.get("schematics") + "`").queue();
         }
     }

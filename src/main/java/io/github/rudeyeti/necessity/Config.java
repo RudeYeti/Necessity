@@ -38,6 +38,7 @@ public class Config {
         public static boolean deleteOnLeave;
         public static ArrayList<String> blacklist;
         // Schematics Configuration
+        public static boolean commandMode;
         public static String schematicsChannelId;
         public static String sizeLimit;
         // Status Configuration

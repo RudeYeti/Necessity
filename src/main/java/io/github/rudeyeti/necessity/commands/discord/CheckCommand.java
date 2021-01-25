@@ -53,6 +53,6 @@ public class CheckCommand {
             }
         }
 
-        CommandManager.textChannel.sendMessage("The specified user could not be found.").queue();
+        CommandManager.textChannel.sendMessage("Usage: The specified user could not be found.").queue();
     }
 }
