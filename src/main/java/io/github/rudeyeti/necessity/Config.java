@@ -33,12 +33,13 @@ public class Config {
         public static boolean legacyMode;
         public static String buildTeamMembers;
         // Whitelist Configuration
+        public static boolean whitelistCommandMode;
         public static String whitelistChannelId;
         public static boolean linkAccounts;
         public static boolean deleteOnLeave;
         public static ArrayList<String> blacklist;
         // Schematics Configuration
-        public static boolean commandMode;
+        public static boolean schematicsCommandMode;
         public static String schematicsChannelId;
         public static String sizeLimit;
         // Status Configuration

@@ -30,11 +30,11 @@ public class File {
         add("The schematic `%s` has been successfully uploaded.");
     }};
 
-    private static void getErrorMessage(boolean isCommand, TextChannel channel, Message message, String errorMessage) {
+    private static void getErrorMessage(boolean isCommand, Message message, String errorMessage) {
         if (isCommand) {
-            channel.sendMessage(errorMessage).queue();
+            message.getTextChannel().sendMessage(errorMessage).queue();
         } else {
-            channel.sendMessage(errorMessage).complete().delete().completeAfter(3, TimeUnit.SECONDS);
+            message.getTextChannel().sendMessage(errorMessage).complete().delete().completeAfter(3, TimeUnit.SECONDS);
             message.delete().queue();
         }
     }
@@ -87,13 +87,15 @@ public class File {
     }
 
     protected static void get(GuildMessageReceivedEvent event) {
-        if (!Config.get.commandMode && event.getChannel().getId().equals(Config.get.schematicsChannelId)) {
-            get(false, event.getGuild(), event.getChannel(), event.getMessage(), event.getMessage().getContentRaw());
+        if (!Config.get.schematicsCommandMode && event.getChannel().getId().equals(Config.get.schematicsChannelId)) {
+            get(false, event.getMessage(), event.getMessage().getContentRaw());
         }
     }
 
-    protected static void get(boolean isCommand, Guild guild, TextChannel channel, Message message, String urlString) {
-        if (guild == Necessity.guild) {
+    protected static void get(boolean isCommand, Message message, String urlString) {
+        TextChannel channel = message.getTextChannel();
+
+        if (message.getGuild() == Necessity.guild) {
             java.io.File schematicsFolder = new java.io.File(Plugins.getWorldEdit().getDataFolder() + java.io.File.separator + "schematics");
 
             try {
@@ -106,7 +108,7 @@ public class File {
                 String downloadFile = download(url, schematicsFolder);
 
                 if (downloadFile.startsWith("Usage:")) {
-                    getErrorMessage(isCommand, channel, message, downloadFile);
+                    getErrorMessage(isCommand, message, downloadFile);
                 } else {
                     channel.sendMessage(downloadFile).queue();
                 }
@@ -130,13 +132,13 @@ public class File {
                             attachments.get(0).downloadToFile(file);
                             channel.sendMessage(String.format(getMessage.get(2), fileName)).queue();
                         } else {
-                            getErrorMessage(isCommand, channel, message, String.format(getMessage.get(1), fileName, Config.get.sizeLimit));
+                            getErrorMessage(isCommand, message, String.format(getMessage.get(1), fileName, Config.get.sizeLimit));
                         }
                     } else {
-                        getErrorMessage(isCommand, channel, message, String.format(getMessage.get(0), fileName));
+                        getErrorMessage(isCommand, message, String.format(getMessage.get(0), fileName));
                     }
                 } else {
-                    getErrorMessage(isCommand, channel, message, "Usage: The message must either contain a link or have a schematic attached to it.");
+                    getErrorMessage(isCommand, message, "Usage: The message must either contain a link or have a schematic attached to it.");
                 }
             }
         }

@@ -2,6 +2,7 @@ package io.github.rudeyeti.necessity.listeners;
 
 import github.scarsz.discordsrv.api.Subscribe;
 import github.scarsz.discordsrv.api.events.AccountLinkedEvent;
+import github.scarsz.discordsrv.api.events.AccountUnlinkedEvent;
 import github.scarsz.discordsrv.api.events.DiscordReadyEvent;
 import github.scarsz.discordsrv.api.events.GameChatMessagePreProcessEvent;
 import io.github.rudeyeti.necessity.Config;
@@ -23,7 +24,17 @@ public class DiscordSRVListener {
 
     @Subscribe
     public void accountLinkedEvent(AccountLinkedEvent event) {
-        event.getPlayer().setWhitelisted(Config.get.whitelist);
-        Necessity.server.reloadWhitelist();
+        if (Config.get.whitelist) {
+            event.getPlayer().setWhitelisted(true);
+            Necessity.server.reloadWhitelist();
+        }
+    }
+
+    @Subscribe
+    public void accountUnlinkedEvent(AccountUnlinkedEvent event) {
+        if (Config.get.whitelist) {
+            event.getPlayer().setWhitelisted(false);
+            Necessity.server.reloadWhitelist();
+        }
     }
 }

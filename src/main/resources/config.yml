@@ -59,6 +59,10 @@ build-team-members: "https://buildtheearth.net/buildteams/#/members"
 
 # Whitelist Configuration
 
+# Whether to replace the whitelist channel with a Discord Command.
+# Default value: false
+whitelist-command-mode: false
+
 # The ID of the Discord Channel being used as a whitelist.
 # Default value: "##################"
 whitelist-channel-id: "##################"
@@ -82,7 +86,7 @@ blacklist:
 
 # Whether to replace the schematics channel with a Discord Command.
 # Default value: false
-command-mode: false
+schematics-command-mode: false
 
 # The ID of the Discord Channel which will have schematics posted in it.
 # Default value: "##################"

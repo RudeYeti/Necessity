@@ -24,9 +24,9 @@ public class Schematics {
         }
     }
 
-    public static void get(boolean isCommand, Guild guild, TextChannel channel, Message message, String urlString) {
+    public static void get(boolean isCommand, Message message, String urlString) {
         if (isEnabled()) {
-            File.get(isCommand, guild, channel, message, urlString);
+            File.get(isCommand, message, urlString);
         }
     }
 }

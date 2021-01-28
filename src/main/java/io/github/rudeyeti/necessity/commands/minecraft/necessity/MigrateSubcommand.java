@@ -27,10 +27,14 @@ public class MigrateSubcommand {
 
                         linkedAccounts.forEach((id, uuid) -> {
                             OfflinePlayer offlinePlayer = Necessity.server.getOfflinePlayer(uuid);
-                            offlinePlayer = Necessity.server.getOfflinePlayer(offlinePlayer.getName());
+                            String username = offlinePlayer.getName();
 
-                            if (offlinePlayer.isWhitelisted() == !isAdd) {
-                                offlinePlayer.setWhitelisted(isAdd);
+                            if (username != null) {
+                                offlinePlayer = Necessity.server.getOfflinePlayer(username);
+
+                                if (offlinePlayer.isWhitelisted() == !isAdd) {
+                                    offlinePlayer.setWhitelisted(isAdd);
+                                }
                             }
                         });
 

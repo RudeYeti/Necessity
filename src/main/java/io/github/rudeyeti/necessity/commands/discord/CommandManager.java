@@ -23,13 +23,18 @@ public class CommandManager {
         message = event.getMessage();
         messageContent = message.getContentRaw();
         textChannel = message.getTextChannel();
-        String upload = Config.get.commandMode ? " | upload" : "";
-        String url = Config.get.commandMode ? " | url" : "";
+        String upload = Config.get.schematicsCommandMode ? " | upload" : "";
+        String url = Config.get.schematicsCommandMode ? " | url" : "";
 
         commands.put("check", () -> CheckCommand.execute(args));
         arguments.put("check", "<id | uuid | user | username>");
         commands.put("schematics", () -> SchematicsCommand.execute(args));
         arguments.put("schematics", "<list" + upload + " | download | rename> [file" + url + "] [name]");
+
+        if (Config.get.whitelistCommandMode) {
+            commands.put("whitelist", () -> WhitelistCommand.execute(args));
+            arguments.put("whitelist", "<uuid | username>");
+        }
 
         if (messageContent.startsWith(Config.get.prefix)) {
             List<String> channelIds = Arrays.asList(Config.get.statusChannelId, Config.get.schematicsChannelId, Config.get.whitelistChannelId);
@@ -53,8 +58,7 @@ public class CommandManager {
                             }
 
                             execute.run();
-                        } else if (arguments.get(name).length() == 0) {
-                            args.set(0, args.get(0).substring(1));
+                        } else if (arguments.get(name) == null) {
                             execute.run();
                         } else {
                             textChannel.sendMessage("Usage: `" + Config.get.prefix + name + " " + arguments.get(name) + "`").queue();

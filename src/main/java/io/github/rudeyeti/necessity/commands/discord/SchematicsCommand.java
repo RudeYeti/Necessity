@@ -103,9 +103,9 @@ public class SchematicsCommand {
                 }
                 break;
             default:
-                if (Config.get.commandMode && args.get(0).equalsIgnoreCase("upload")) {
+                if (Config.get.schematicsCommandMode && args.get(0).equalsIgnoreCase("upload")) {
                     String urlString = args.size() > 1 ? args.get(1) : "";
-                    Schematics.get(true, CommandManager.textChannel.getGuild(), CommandManager.textChannel, CommandManager.message, urlString);
+                    Schematics.get(true, CommandManager.message, urlString);
                     return;
                 }
 

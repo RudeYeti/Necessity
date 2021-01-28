@@ -23,15 +23,19 @@ public class Generate {
 
             DiscordSRV.getPlugin().getAccountLinkManager().getLinkedAccounts().forEach((name, uuid) -> {
                 OfflinePlayer offlinePlayer = Necessity.server.getOfflinePlayer(uuid);
-                int activity = Plugins.getCoreProtect().performLookup(
-                        Integer.parseInt(time), Collections.singletonList(offlinePlayer.getName()),
-                        null, null, null, null, 0, null
-                ).size();
+                String username = offlinePlayer.getName();
 
-                // Formula to count the pages of CoreProtect entries, which is basically the total divided by four.
-                int pages = activity > 0 ? (int) Math.ceil((activity + 1) / 4.0) : 0;
+                if (username != null) {
+                    int activity = Plugins.getCoreProtect().performLookup(
+                            Integer.parseInt(time), Collections.singletonList(offlinePlayer.getName()),
+                            null, null, null, null, 0, null
+                    ).size();
 
-                lines.add(offlinePlayer.getName() + " - " + pages);
+                    // Formula to count the pages of CoreProtect entries, which is basically the total divided by four.
+                    int pages = activity > 0 ? (int) Math.ceil((activity + 1) / 4.0) : 0;
+
+                    lines.add(username + " - " + pages);
+                }
             });
 
             lines.sort(new Comparator<String>() {
