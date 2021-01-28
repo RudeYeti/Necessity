@@ -59,7 +59,7 @@ public class EventListener implements Listener {
             Integration.join(event);
 
             Status.onlinePlayers.add(event.getPlayer().getName());
-            Status.statusChannel.editMessageById(Config.get.messageId, Status.serverOn().build()).queue();
+            Status.statusChannel.editMessageById(Config.get.messageId, Status.serverOn(true).build()).queue();
         } catch (NullPointerException ignored) {}
     }
 
@@ -69,7 +69,7 @@ public class EventListener implements Listener {
             silentJoin(event.getPlayer());
 
             Status.onlinePlayers.remove(event.getPlayer().getName());
-            Status.statusChannel.editMessageById(Config.get.messageId, Status.serverOn().build()).queue();
+            Status.statusChannel.editMessageById(Config.get.messageId, Status.serverOn(true).build()).queue();
         } catch (NullPointerException ignored) {}
     }
 }

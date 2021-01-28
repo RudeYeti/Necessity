@@ -11,26 +11,28 @@ public class Messages {
         Status.statusChannel = Necessity.guild.getTextChannelById(Config.get.statusChannelId);
 
         if (Config.get.messageId.isEmpty()) {
-            String messageId = Status.statusChannel.sendMessage(serverOn().build()).complete().getId();
+            String messageId = Status.statusChannel.sendMessage(serverOn(true).build()).complete().getId();
             Config.setValue("message-id", "", messageId);
             Config.updateConfig();
         } else {
-            Status.statusChannel.editMessageById(Config.get.messageId, serverOn().build()).queue();
+            Status.statusChannel.editMessageById(Config.get.messageId, serverOn(true).build()).queue();
         }
     }
 
-    protected static EmbedBuilder serverOn() {
+    protected static EmbedBuilder serverOn(boolean includeStatus) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         int onlinePlayers = Status.onlinePlayers.size();
 
         embedBuilder.setTitle(Config.get.serverAddress, null);
         embedBuilder.setColor(new Color(0x759965));
 
-        embedBuilder.addField(
-                "Status:",
-                "Online",
-                false
-        );
+        if (includeStatus) {
+            embedBuilder.addField(
+                    "Status:",
+                    "Online",
+                    false
+            );
+        }
 
         embedBuilder.addField(
                 "Online Players:",

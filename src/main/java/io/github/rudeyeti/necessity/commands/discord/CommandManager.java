@@ -11,7 +11,7 @@ import java.util.*;
 
 public class CommandManager {
 
-    public static Map<String, Runnable> commands = new HashMap<>();
+    public static Map<String, Runnable> commands = new LinkedHashMap<>();
     public static Map<String, String> arguments = new HashMap<>();
     public static Message message;
     public static String messageContent;
@@ -26,8 +26,14 @@ public class CommandManager {
         String upload = Config.get.schematicsCommandMode ? " | upload" : "";
         String url = Config.get.schematicsCommandMode ? " | url" : "";
 
+        commands.put("help", () -> HelpCommand.execute(args));
+        arguments.put("help", "<list | command>");
         commands.put("check", () -> CheckCommand.execute(args));
         arguments.put("check", "<id | uuid | user | username>");
+        commands.put("ip", IpCommand::execute);
+        arguments.put("ip", null);
+        commands.put("online", OnlineCommand::execute);
+        arguments.put("online", null);
         commands.put("schematics", () -> SchematicsCommand.execute(args));
         arguments.put("schematics", "<list" + upload + " | download | rename> [file" + url + "] [name]");
 
@@ -43,7 +49,7 @@ public class CommandManager {
                 args.add(messageContent.substring(Config.get.prefix.length()));
 
                 commands.forEach((name, execute) -> {
-                    if (args.get(0).startsWith(name)) {
+                    if (args.size() > 0 && args.get(0).startsWith(name)) {
                         args.set(0, args.get(0).substring(name.length()));
 
                         if (args.get(0).length() > 1) {
@@ -58,6 +64,7 @@ public class CommandManager {
                             }
 
                             execute.run();
+                            args.clear();
                         } else if (arguments.get(name) == null) {
                             execute.run();
                         } else {

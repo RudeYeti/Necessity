@@ -31,8 +31,8 @@ public class Status {
         }
     }
 
-    public static EmbedBuilder serverOn() {
-        return isEnabled() ? Messages.serverOn() : null;
+    public static EmbedBuilder serverOn(boolean includeStatus) {
+        return Messages.serverOn(includeStatus);
     }
 
     public static EmbedBuilder serverOff() {

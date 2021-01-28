@@ -18,8 +18,8 @@ status: false
 # Discord Configuration
 
 # The prefix used for the various Discord Commands.
-# Default value: "!"
-prefix: "!"
+# Default value: "="
+prefix: "="
 
 
 # Integration Configuration

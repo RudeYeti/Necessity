@@ -3,6 +3,8 @@ package io.github.rudeyeti.necessity.utils;
 import github.scarsz.discordsrv.dependencies.okhttp3.OkHttpClient;
 import github.scarsz.discordsrv.dependencies.okhttp3.Request;
 import github.scarsz.discordsrv.dependencies.okhttp3.Response;
+import io.github.rudeyeti.necessity.Necessity;
+import org.bukkit.OfflinePlayer;
 
 import java.io.IOException;
 import java.net.URL;
@@ -21,6 +23,13 @@ public class Player {
                 return true;
             } else {
                 response.close();
+
+                OfflinePlayer offlinePlayer = Necessity.server.getOfflinePlayer(username);
+
+                if (offlinePlayer.getName() != null) {
+                    return true;
+                }
+
                 return false;
             }
         } catch (IOException error) {
